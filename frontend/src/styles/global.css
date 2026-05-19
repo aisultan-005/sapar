@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    * {
+        -webkit-tap-highlight-color: transparent;
+        box-sizing: border-box;
+    }
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-feature-settings: "liga" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #fff;
+}
+
+#root {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+
+.press-effect      { transition: transform 0.15s ease; }
+.press-effect:active       { transform: scale(0.97) !important; }
+.press-effect-soft:active  { transform: scale(0.98) !important; }
+
+/* Dark mode */
+.dark-mode            { background: #0f172a !important; }
+.dark-mode .dm-bg     { background: #1e293b !important; }
+.dark-mode .dm-card   { background: #334155 !important; }
+.dark-mode .dm-text   { color: #e2e8f0    !important; }
+.dark-mode .dm-subtext{ color: #94a3b8    !important; }
+.dark-mode .dm-border { border-color: #334155 !important; }

@@ -1,0 +1,75 @@
+export const allLocations = [
+    {
+        id: 1,
+        name: "Алматы",
+        subtitle: "Город у гор",
+        rating: 4.8,
+        reviews: 2340,
+        img: "almaty",
+        tags: ["Природа", "Еда", "Горы"],
+        color: "#3B82F6",
+    },
+    {
+        id: 2,
+        name: "Астана",
+        subtitle: "Столица будущего",
+        rating: 4.7,
+        reviews: 1890,
+        img: "astana",
+        tags: ["Архитектура", "Семья"],
+        color: "#8B5CF6",
+    },
+    {
+        id: 3,
+        name: "Туркестан",
+        subtitle: "Духовная столица",
+        rating: 4.9,
+        reviews: 1450,
+        img: "turkestan",
+        tags: ["История", "Культура"],
+        color: "#D97706",
+    },
+    {
+        id: 4,
+        name: "Бурабай",
+        subtitle: "Казахская Швейцария",
+        rating: 4.6,
+        reviews: 980,
+        img: "burabay",
+        tags: ["Природа", "Озера"],
+        color: "#059669",
+    },
+];
+
+export const nearbyPlaces = [
+    {
+        id: 101,
+        name: "Медеу",
+        subtitle: "Каток высокогорный",
+        dist: "2.3 км",
+        rating: 4.7,
+        reviews: 500,
+        tags: ["Природа", "Спорт"],
+        img: "almaty",
+        color: "#3b82f6",
+    },
+    {
+        id: 102,
+        name: "Кок-Тобе",
+        subtitle: "Смотровая площадка",
+        dist: "4.1 км",
+        rating: 4.5,
+        reviews: 430,
+        tags: ["Природа", "Семья"],
+        img: "almaty",
+        color: "#10b981",
+    },
+];
+
+export const defaultItinerary = [
+    { id: 1, time: "08:00", title: "Завтрак в Kaganat", subtitle: "Национальная кухня", duration: "1ч", icon: "food" },
+    { id: 2, time: "10:00", title: "Чарынский каньон", subtitle: "Гранд-Каньон Казахстана", duration: "3ч", icon: "nature" },
+    { id: 3, time: "13:00", title: "Обед у реки Чарын", subtitle: "Пикник с видом", duration: "1ч", icon: "food" },
+    { id: 4, time: "15:00", title: "Кольсайские озёра", subtitle: "Жемчужины Тянь-Шаня", duration: "3ч", icon: "nature" },
+    { id: 5, time: "19:00", title: "Юрточный лагерь", subtitle: "Ночёвка под звёздами", duration: "—", icon: "stay" },
+];

@@ -6,6 +6,7 @@ import ScenePlaceholder from "../components/ui/ScenePlaceholder";
 import { TEAL, TEAL_DARK, GOLD } from "../constants/theme";
 import { allLocations, nearbyPlaces } from "../data/locations";
 import { filterDefs } from "../data/filters";
+import { useLang } from "../i18n/LanguageContext";
 
 const DiscoveryScreen = ({
                              onLocationTap,
@@ -16,6 +17,7 @@ const DiscoveryScreen = ({
                              onFilterChange,
                          }) => {
     const [searchFocused, setSearchFocused] = useState(false);
+    const { t } = useLang();
 
     const filteredLocations = allLocations.filter((loc) => {
         const matchesSearch =
@@ -60,7 +62,7 @@ const DiscoveryScreen = ({
                             <h1
                                 className="text-white text-xl font-bold mt-1"
                             >
-                                Куда отправимся?
+                                {t("whereTo")}
                             </h1>
                         </div>
                         <ShanyrakIcon size={32} color="rgba(255,255,255,0.9)" />
@@ -87,7 +89,7 @@ const DiscoveryScreen = ({
                         />
                         <input
                             className="bg-transparent outline-none text-sm flex-1"
-                            placeholder="Поиск мест и достопримечательностей..."
+                            placeholder={t("searchPlaceholder")}
                             style={{
                                 color: searchFocused
                                     ? "#1a1a1a"

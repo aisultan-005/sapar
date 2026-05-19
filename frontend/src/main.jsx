@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ClerkProvider } from "@clerk/react";
 import App from "./App";
 import ClerkApiTokenBridge from "./components/auth/ClerkApiTokenBridge";
+import { LanguageProvider } from "./i18n/LanguageContext";
 import "./styles/global.css";
 
 const clerkPk = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY?.trim();
@@ -13,6 +14,7 @@ const root = createRoot(document.getElementById("root"));
 root.render(
     <StrictMode>
         <BrowserRouter>
+            <LanguageProvider>
             {clerkPk ? (
                 <ClerkProvider
                     publishableKey={clerkPk}
@@ -27,6 +29,7 @@ root.render(
             ) : (
                 <App />
             )}
+            </LanguageProvider>
         </BrowserRouter>
     </StrictMode>
 );

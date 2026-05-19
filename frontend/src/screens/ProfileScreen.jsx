@@ -7,9 +7,11 @@ import ProfileAccountClerk from "../components/auth/ProfileAccountClerk";
 import { TEAL, TEAL_DARK, GOLD, SAND } from "../constants/theme";
 
 import { showClerk } from "../constants/clerk";
+import { useLang } from "../i18n/LanguageContext";
 
 const ProfileScreen = ({ settings, onSettingsChange }) => {
-    const { lang, darkMode } = settings;
+    const { darkMode } = settings;
+    const { lang, setLang } = useLang();
 
     const update = (key, val) =>
         onSettingsChange({ ...settings, [key]: val });
@@ -83,7 +85,7 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
                         {["ҚАЗ", "РУС", "ENG"].map((l) => (
                             <button
                                 key={l}
-                                onClick={() => update("lang", l)}
+                                onClick={() => setLang(l)}
                                 className="flex-1 py-2 text-xs font-bold transition-all"
                                 style={{
                                     background:

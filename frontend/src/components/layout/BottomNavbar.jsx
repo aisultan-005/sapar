@@ -1,14 +1,16 @@
 import { Compass, Map, Heart, User } from "lucide-react";
 import { TEAL } from "../../constants/theme";
+import { useLang } from "../../i18n/LanguageContext";
 
-const tabs = [
-    { icon: Compass, label: "Главная" },
-    { icon: Map,     label: "Маршрут" },
-    { icon: Heart,   label: "Избранное" },
-    { icon: User,    label: "Профиль" },
-];
-
-const BottomNavbar = ({ activeTab, onTabChange, likedCount }) => (
+const BottomNavbar = ({ activeTab, onTabChange, likedCount }) => {
+    const { t } = useLang();
+    const tabs = [
+        { icon: Compass, label: t("navHome") },
+        { icon: Map,     label: t("navRoute") },
+        { icon: Heart,   label: t("navFav") },
+        { icon: User,    label: t("navProfile") },
+    ];
+    return (
     <nav
         className="flex items-center justify-around px-4"
         style={{ paddingBottom: 40
@@ -62,6 +64,7 @@ const BottomNavbar = ({ activeTab, onTabChange, likedCount }) => (
             );
         })}
     </nav>
-);
+    );
+};
 
 export default BottomNavbar;

@@ -7,6 +7,7 @@ const dict = {
         whereTo: "Куда отправимся?",
         searchPlaceholder: "Поиск мест и достопримечательностей...",
         navHome: "Главная",
+        navMap: "Карта",
         navRoute: "Маршрут",
         navFav: "Избранное",
         navProfile: "Профиль",
@@ -17,12 +18,18 @@ const dict = {
         aiSubtitle: "Умный планировщик подберёт идеальный путь",
         favEmpty: "Здесь пока пусто. Добавляйте места в избранное!",
         language: "Язык",
+        // Карта
+        mapEyebrow: "Карта мест",
+        mapTitle: "Казахстан на карте",
+        mapHint: "Нажмите маркер",
+        mapOpen: "Открыть место",
     },
     ҚАЗ: {
         hello: "Сәлем!",
         whereTo: "Қайда барамыз?",
         searchPlaceholder: "Орындар мен көрікті жерлерді іздеу...",
         navHome: "Басты бет",
+        navMap: "Карта",
         navRoute: "Бағыт",
         navFav: "Таңдаулы",
         navProfile: "Профиль",
@@ -33,12 +40,18 @@ const dict = {
         aiSubtitle: "Ақылды жоспарлаушы тамаша жол таңдайды",
         favEmpty: "Әзірге бос. Орындарды таңдаулыға қосыңыз!",
         language: "Тіл",
+        // Карта
+        mapEyebrow: "Орындар картасы",
+        mapTitle: "Қазақстан картада",
+        mapHint: "Маркерді басыңыз",
+        mapOpen: "Орынды ашу",
     },
     ENG: {
         hello: "Hello!",
         whereTo: "Where to?",
         searchPlaceholder: "Search places and attractions...",
         navHome: "Home",
+        navMap: "Map",
         navRoute: "Route",
         navFav: "Favorites",
         navProfile: "Profile",
@@ -49,6 +62,11 @@ const dict = {
         aiSubtitle: "Smart planner will pick the perfect path",
         favEmpty: "Nothing here yet. Add places to favorites!",
         language: "Language",
+        // Карта
+        mapEyebrow: "Places map",
+        mapTitle: "Kazakhstan on map",
+        mapHint: "Tap a marker",
+        mapOpen: "Open place",
     },
 };
 

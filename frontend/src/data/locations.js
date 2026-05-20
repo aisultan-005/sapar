@@ -8,6 +8,7 @@ export const allLocations = [
         img: "almaty",
         tags: ["Природа", "Еда", "Горы"],
         color: "#3B82F6",
+        coords: [43.2389, 76.8897],
     },
     {
         id: 2,
@@ -18,6 +19,7 @@ export const allLocations = [
         img: "astana",
         tags: ["Архитектура", "Семья"],
         color: "#8B5CF6",
+        coords: [51.1605, 71.4704],
     },
     {
         id: 3,
@@ -28,6 +30,7 @@ export const allLocations = [
         img: "turkestan",
         tags: ["История", "Культура"],
         color: "#D97706",
+        coords: [43.2972, 68.2517],
     },
     {
         id: 4,
@@ -38,6 +41,7 @@ export const allLocations = [
         img: "burabay",
         tags: ["Природа", "Озера"],
         color: "#059669",
+        coords: [53.0833, 70.3167],
     },
     {
         id: 5,
@@ -48,6 +52,7 @@ export const allLocations = [
         img: "charyn",
         tags: ["Природа", "Каньоны"],
         color: "#EA580C",
+        coords: [43.3550, 79.0750],
     },
     {
         id: 6,
@@ -58,6 +63,7 @@ export const allLocations = [
         img: "kolsai",
         tags: ["Природа", "Озера", "Горы"],
         color: "#0D9488",
+        coords: [42.7333, 78.3333],
     },
     {
         id: 7,
@@ -68,6 +74,7 @@ export const allLocations = [
         img: "kaindy",
         tags: ["Природа", "Озера"],
         color: "#0891B2",
+        coords: [42.8861, 78.4358],
     },
     {
         id: 8,
@@ -78,6 +85,7 @@ export const allLocations = [
         img: "shymkent",
         tags: ["Культура", "Еда", "Семья"],
         color: "#DB2777",
+        coords: [42.3417, 69.5901],
     },
     {
         id: 9,
@@ -88,6 +96,7 @@ export const allLocations = [
         img: "mangystau",
         tags: ["Природа", "Пустыня"],
         color: "#B45309",
+        coords: [43.6500, 51.1500],
     },
     {
         id: 10,
@@ -98,6 +107,7 @@ export const allLocations = [
         img: "okzhetpes",
         tags: ["Природа", "Горы"],
         color: "#16A34A",
+        coords: [53.0700, 70.2800],
     },
     {
         id: 11,
@@ -108,6 +118,7 @@ export const allLocations = [
         img: "alakol",
         tags: ["Природа", "Озера", "Пляж"],
         color: "#2563EB",
+        coords: [46.1167, 81.7667],
     },
     {
         id: 12,
@@ -118,6 +129,7 @@ export const allLocations = [
         img: "baikonur",
         tags: ["История", "Наука"],
         color: "#7C3AED",
+        coords: [45.9646, 63.3052],
     },
     {
         id: 13,
@@ -128,6 +140,7 @@ export const allLocations = [
         img: "balkhash",
         tags: ["Природа", "Озера", "Рыбалка"],
         color: "#0EA5E9",
+        coords: [46.8400, 74.9800],
     },
     {
         id: 14,
@@ -138,6 +151,7 @@ export const allLocations = [
         img: "taraz",
         tags: ["История", "Культура"],
         color: "#C2410C",
+        coords: [42.9000, 71.3667],
     },
     {
         id: 15,
@@ -148,6 +162,7 @@ export const allLocations = [
         img: "sayram",
         tags: ["Природа", "Горы", "Поход"],
         color: "#15803D",
+        coords: [42.0833, 70.5833],
     },
 ];
 
@@ -162,6 +177,7 @@ export const nearbyPlaces = [
         tags: ["Природа", "Спорт"],
         img: "almaty",
         color: "#3b82f6",
+        coords: [43.1581, 77.0581],
     },
     {
         id: 102,
@@ -173,6 +189,7 @@ export const nearbyPlaces = [
         tags: ["Природа", "Семья"],
         img: "almaty",
         color: "#10b981",
+        coords: [43.2350, 76.9755],
     },
     {
         id: 103,
@@ -184,6 +201,7 @@ export const nearbyPlaces = [
         tags: ["Природа", "Озера", "Горы"],
         img: "kolsai",
         color: "#0d9488",
+        coords: [43.0531, 76.9836],
     },
     {
         id: 104,
@@ -195,6 +213,7 @@ export const nearbyPlaces = [
         tags: ["Спорт", "Горы", "Зима"],
         img: "almaty",
         color: "#2563eb",
+        coords: [43.1247, 77.0828],
     },
     {
         id: 105,
@@ -206,6 +225,7 @@ export const nearbyPlaces = [
         tags: ["Семья", "Природа"],
         img: "almaty",
         color: "#16a34a",
+        coords: [43.2031, 76.9281],
     },
     {
         id: 106,
@@ -217,6 +237,7 @@ export const nearbyPlaces = [
         tags: ["Еда", "Культура"],
         img: "shymkent",
         color: "#db2777",
+        coords: [43.2647, 76.9508],
     },
     {
         id: 107,
@@ -228,6 +249,7 @@ export const nearbyPlaces = [
         tags: ["Природа", "Каньоны"],
         img: "charyn",
         color: "#ea580c",
+        coords: [43.3550, 79.0750],
     },
 ];
 

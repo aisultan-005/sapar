@@ -56,6 +56,33 @@ body {
     box-shadow: 0 4px 20px rgba(31, 41, 55, 0.06);
 }
 
+/* === Leaflet — стилизация под Sapar === */
+.leaflet-container {
+    font-family: "Inter", system-ui, sans-serif;
+    background: #F0F4F2;
+}
+.sapar-marker { background: transparent !important; border: none !important; }
+.leaflet-popup-content-wrapper {
+    border-radius: 16px !important;
+    box-shadow: 0 8px 28px rgba(31, 41, 55, 0.18) !important;
+    padding: 4px !important;
+}
+.leaflet-popup-content { margin: 8px 10px !important; }
+.leaflet-popup-tip { box-shadow: 0 2px 6px rgba(31, 41, 55, 0.12) !important; }
+.leaflet-control-zoom a {
+    border-radius: 10px !important;
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    color: #1F2937 !important;
+    box-shadow: 0 2px 8px rgba(31, 41, 55, 0.1) !important;
+}
+.leaflet-control-attribution {
+    font-size: 9px !important;
+    background: rgba(255,255,255,0.85) !important;
+    border-radius: 6px 0 0 0 !important;
+}
+
 /* === Dark mode === */
 .dark-mode            { background: #0f172a !important; color: #e2e8f0 !important; }
 .dark-mode .dm-bg     { background: #1e293b !important; }

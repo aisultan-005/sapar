@@ -1,4 +1,4 @@
-import { Compass, Map, Heart, User } from "lucide-react";
+import { Compass, Map, Route, Heart, User } from "lucide-react";
 import { TEAL } from "../../constants/theme";
 import { useLang } from "../../i18n/LanguageContext";
 
@@ -6,13 +6,17 @@ const BottomNavbar = ({ activeTab, onTabChange, likedCount }) => {
     const { t } = useLang();
     const tabs = [
         { icon: Compass, label: t("navHome") },
-        { icon: Map,     label: t("navRoute") },
+        { icon: Map,     label: t("navMap") },
+        { icon: Route,   label: t("navRoute") },
         { icon: Heart,   label: t("navFav") },
         { icon: User,    label: t("navProfile") },
     ];
+    // индекс таба «Избранное» (для бейджа) — теперь 3
+    const FAV_INDEX = 3;
+
     return (
         <nav
-            className="flex items-center justify-around px-4 bg-white"
+            className="flex items-center justify-around px-2 bg-white"
             style={{
                 paddingBottom: 28,
                 paddingTop: 14,
@@ -24,28 +28,28 @@ const BottomNavbar = ({ activeTab, onTabChange, likedCount }) => {
             {tabs.map((tab, i) => {
                 const Icon = tab.icon;
                 const active = activeTab === i;
-                const badge = i === 2 && likedCount > 0;
+                const badge = i === FAV_INDEX && likedCount > 0;
 
                 return (
                     <button
                         key={i}
                         onClick={() => onTabChange(i)}
-                        className="flex flex-col items-center gap-1 py-1 px-3 relative press-effect"
+                        className="flex flex-col items-center gap-1 py-1 px-2 relative press-effect"
                         aria-label={tab.label}
                         aria-current={active ? "page" : undefined}
                     >
                         <div
                             className="flex items-center justify-center transition-all relative rounded-full"
                             style={{
-                                width: active ? 56 : 36,
-                                height: 36,
+                                width: active ? 52 : 34,
+                                height: 34,
                                 background: active ? `${TEAL}15` : "transparent",
                             }}
                         >
                             <Icon
-                                size={22}
+                                size={21}
                                 color={active ? TEAL : "#94a3b8"}
-                                fill={active && i === 2 ? TEAL : "none"}
+                                fill={active && i === FAV_INDEX ? TEAL : "none"}
                                 strokeWidth={active ? 2.4 : 1.8}
                             />
                             {badge && (
@@ -64,7 +68,7 @@ const BottomNavbar = ({ activeTab, onTabChange, likedCount }) => {
                         </div>
                         <span
                             className="font-medium"
-                            style={{ fontSize: 10.5, color: active ? TEAL : "#94a3b8" }}
+                            style={{ fontSize: 10, color: active ? TEAL : "#94a3b8" }}
                         >
                             {tab.label}
                         </span>

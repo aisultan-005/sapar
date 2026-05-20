@@ -3,6 +3,7 @@ import { useState } from "react";
 import BottomNavbar from "./BottomNavbar";
 
 import DiscoveryScreen from "../../screens/DiscoveryScreen";
+import MapScreen       from "../../screens/MapScreen";
 import ItineraryScreen from "../../screens/ItineraryScreen";
 import POIScreen       from "../../screens/POIScreen";
 import FavoritesScreen from "../../screens/FavoritesScreen";
@@ -43,11 +44,12 @@ export default function SaparMainShell() {
             );
         }
 
+        // Табы: 0=Главная, 1=Карта, 2=Маршрут, 3=Избранное, 4=Профиль
         switch (activeTab) {
             case 0: return (
                 <DiscoveryScreen
                     onLocationTap={handleLocationTap}
-                    onAIRoute={() => setActiveTab(1)}
+                    onAIRoute={() => setActiveTab(2)}
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
                     activeFilter={activeFilter}
@@ -55,6 +57,9 @@ export default function SaparMainShell() {
                 />
             );
             case 1: return (
+                <MapScreen onLocationTap={handleLocationTap} />
+            );
+            case 2: return (
                 <ItineraryScreen
                     items={items}
                     onItemsChange={reorderItems}
@@ -63,14 +68,14 @@ export default function SaparMainShell() {
                     onRemoveItem={removeFromRoute}
                 />
             );
-            case 2: return (
+            case 3: return (
                 <FavoritesScreen
                     likedIds={likedIds}
                     onLocationTap={handleLocationTap}
                     onToggleLike={toggleLike}
                 />
             );
-            case 3: return (
+            case 4: return (
                 <ProfileScreen
                     settings={settings}
                     onSettingsChange={setSettings}

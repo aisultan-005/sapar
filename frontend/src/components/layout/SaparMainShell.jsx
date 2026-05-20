@@ -25,7 +25,7 @@ export default function SaparMainShell() {
     const [aiModalOpen, setAiModalOpen]   = useState(false);
 
     const { likedIds, toggleLike }             = useLikes();
-    const { items, routeLocationIds, addToRoute, removeFromRoute, reorderItems, replaceItems } = useItinerary();
+    const { items, title, routeLocationIds, addToRoute, removeFromRoute, reorderItems, replaceItems } = useItinerary();
     const { settings, setSettings }            = useSettings();
 
     const handleLocationTap = (loc) => {
@@ -38,8 +38,8 @@ export default function SaparMainShell() {
     };
 
     const handleAIResult = (data) => {
-        // data = { id, title, items: [...], isAI }
-        replaceItems(data.items);
+        // data = { id, title, items: [...], isAI } — передаём целиком, чтобы обновился и title
+        replaceItems(data);
         setActiveTab(2); // переключаемся на вкладку Маршрут
     };
 
@@ -75,6 +75,7 @@ export default function SaparMainShell() {
             case 2: return (
                 <ItineraryScreen
                     items={items}
+                    title={title}
                     onItemsChange={reorderItems}
                     offlineMode={offlineMode}
                     onOfflineModeChange={setOfflineMode}

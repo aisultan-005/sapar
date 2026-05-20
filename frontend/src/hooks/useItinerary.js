@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { defaultItinerary } from "../data/locations";
 
+const DEFAULT_TITLE = "Алматинская область";
+
 export const useItinerary = () => {
     const [items, setItems] = useState(defaultItinerary);
+    const [title, setTitle] = useState(DEFAULT_TITLE);
 
     const routeLocationIds = new Set(
         items.filter((it) => it.locId).map((it) => it.locId)
@@ -36,19 +39,29 @@ export const useItinerary = () => {
 
     const reorderItems = (newItems) => setItems(newItems);
 
-    /** Полная замена маршрута (используется AI-генерацией). */
-    const replaceItems = (newItems) => {
+    /**
+     * Полная замена маршрута. Принимает результат AI:
+     * { title, items, isAI } — title и items обновятся вместе.
+     */
+    const replaceItems = (data) => {
+        // Поддерживаем 2 формы вызова: replaceItems({ title, items }) или replaceItems(arrayOfItems)
+        const newItems = Array.isArray(data) ? data : data?.items;
+        const newTitle = !Array.isArray(data) ? data?.title : null;
+
         if (!Array.isArray(newItems)) return;
-        // Добавляем уникальные id для React key
         const stamped = newItems.map((it, i) => ({
             ...it,
             id: it.id || Date.now() + i,
         }));
         setItems(stamped);
+        if (newTitle && typeof newTitle === "string") {
+            setTitle(newTitle);
+        }
     };
 
     return {
         items,
+        title,
         routeLocationIds,
         addToRoute,
         removeFromRoute,

@@ -6,14 +6,52 @@ import { useLang } from "../i18n/LanguageContext";
 
 const iconMap = { food: "🍽️", nature: "🏔️", stay: "🏕️", added: "📍" };
 
+/** Парсит "2ч", "1.5ч", "30мин", "—" → число часов (float). */
+const parseDurationHours = (str) => {
+    if (!str || typeof str !== "string") return 0;
+    const s = str.toLowerCase().replace(/\s+/g, "");
+    if (s === "—" || s === "-") return 0;
+    const minMatch = s.match(/^(\d+(?:[.,]\d+)?)м(ин)?$/);
+    if (minMatch) return parseFloat(minMatch[1].replace(",", ".")) / 60;
+    const hMatch = s.match(/^(\d+(?:[.,]\d+)?)ч/);
+    if (hMatch) return parseFloat(hMatch[1].replace(",", "."));
+    return 0;
+};
+
+/** Считает сводку маршрута: расстояние, время, бюджет (эвристика по числу остановок). */
+const computeSummary = (items = []) => {
+    const stops = items.length;
+    if (stops === 0) return { distance: "—", time: "—", budget: "—" };
+
+    // Время = сумма длительностей пунктов
+    const hoursSum = items.reduce((sum, it) => sum + parseDurationHours(it.duration), 0);
+    const time = hoursSum > 0
+        ? `~${hoursSum % 1 === 0 ? hoursSum : hoursSum.toFixed(1)}ч`
+        : "—";
+
+    // Расстояние: грубая эвристика — между остановками ~40 км в среднем
+    const distanceKm = Math.max(0, (stops - 1) * 40);
+    const distance = stops === 1 ? "—" : `${distanceKm} км`;
+
+    // Бюджет: ~5000 ₸ на остановку + еда/проживание
+    const budgetK = Math.round(stops * 5);
+    const budget = `~${budgetK}к ₸`;
+
+    return { distance, time, budget };
+};
+
 const ItineraryScreen = ({
                              items,
+                             title,
                              onItemsChange,
                              offlineMode,
                              onOfflineModeChange,
                              onRemoveItem,
                          }) => {
     const { t } = useLang();
+    const summary = computeSummary(items);
+    const daysCount = Math.max(1, Math.ceil(items.length / 5));
+
     const moveItem = (index, dir) => {
         const newItems = [...items];
         const target = index + dir;
@@ -42,14 +80,14 @@ const ItineraryScreen = ({
                                 {t("routeEyebrow")}
                             </p>
                             <h1 className="text-white text-2xl font-bold mt-1 font-display">
-                                {t("routeTitle")}
+                                {title || t("routeTitle")}
                             </h1>
                         </div>
                         <div
                             className="px-3 py-1.5 text-xs font-semibold rounded-full"
                             style={{ background: "rgba(255,255,255,0.22)", color: "#fff" }}
                         >
-                            {t("routeDays")}
+                            {daysCount === 1 ? t("routeDays") : `${daysCount} д`}
                         </div>
                     </div>
 
@@ -241,9 +279,9 @@ const ItineraryScreen = ({
                         </div>
                         <div className="grid grid-cols-3 gap-3">
                             {[
-                                { label: t("sumDistance"), value: "280 км" },
-                                { label: t("sumTime"),     value: "~4.5ч" },
-                                { label: t("sumBudget"),   value: "~25к ₸" },
+                                { label: t("sumDistance"), value: summary.distance },
+                                { label: t("sumTime"),     value: summary.time     },
+                                { label: t("sumBudget"),   value: summary.budget   },
                             ].map((s, i) => (
                                 <div
                                     key={i}

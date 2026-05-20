@@ -11,59 +11,67 @@ const BottomNavbar = ({ activeTab, onTabChange, likedCount }) => {
         { icon: User,    label: t("navProfile") },
     ];
     return (
-    <nav
-        className="flex items-center justify-around px-4"
-        style={{ paddingBottom: 40
-            , paddingTop: 20, background: "#fff", borderTop: "1px solid #f1f5f9" }}
-        aria-label="Основная навигация"
-    >
-        {tabs.map((tab, i) => {
-            const Icon = tab.icon;
-            const active = activeTab === i;
-            const badge = i === 2 && likedCount > 0;
+        <nav
+            className="flex items-center justify-around px-4 bg-white"
+            style={{
+                paddingBottom: 28,
+                paddingTop: 14,
+                borderTop: "1px solid #F1F0EC",
+                boxShadow: "0 -4px 20px rgba(31, 41, 55, 0.04)",
+            }}
+            aria-label="Основная навигация"
+        >
+            {tabs.map((tab, i) => {
+                const Icon = tab.icon;
+                const active = activeTab === i;
+                const badge = i === 2 && likedCount > 0;
 
-            return (
-                <button
-                    key={i}
-                    onClick={() => onTabChange(i)}
-                    className="flex flex-col items-center gap-1 py-1 px-3 relative"
-                    aria-label={tab.label}
-                    aria-current={active ? "page" : undefined}
-                >
-                    <div
-                        className="flex items-center justify-center transition-all relative"
-                        style={{
-                            width: 32,
-                            height: 32,
-                            background: active ? `${TEAL}12` : "transparent",
-                            transform: active ? "scale(1.1)" : "scale(1)",
-                        }}
+                return (
+                    <button
+                        key={i}
+                        onClick={() => onTabChange(i)}
+                        className="flex flex-col items-center gap-1 py-1 px-3 relative press-effect"
+                        aria-label={tab.label}
+                        aria-current={active ? "page" : undefined}
                     >
-                        <Icon
-                            size={20}
-                            color={active ? TEAL : "#94a3b8"}
-                            fill={active && i === 2 ? TEAL : "none"}
-                            strokeWidth={active ? 2.5 : 1.8}
-                        />
-                        {badge && (
-                            <div
-                                className="absolute -top-0.5 -right-0.5 flex items-center justify-center"
-                                style={{ width: 14, height: 14, background: "#f87171", fontSize: 8, color: "#fff", fontWeight: 700 }}
-                            >
-                                {likedCount}
-                            </div>
-                        )}
-                    </div>
-                    <span
-                        className="font-medium"
-                        style={{ fontSize: 10, color: active ? TEAL : "#94a3b8" }}
-                    >
-            {tab.label}
-          </span>
-                </button>
-            );
-        })}
-    </nav>
+                        <div
+                            className="flex items-center justify-center transition-all relative rounded-full"
+                            style={{
+                                width: active ? 56 : 36,
+                                height: 36,
+                                background: active ? `${TEAL}15` : "transparent",
+                            }}
+                        >
+                            <Icon
+                                size={22}
+                                color={active ? TEAL : "#94a3b8"}
+                                fill={active && i === 2 ? TEAL : "none"}
+                                strokeWidth={active ? 2.4 : 1.8}
+                            />
+                            {badge && (
+                                <div
+                                    className="absolute -top-0.5 -right-0.5 flex items-center justify-center rounded-full"
+                                    style={{
+                                        width: 16, height: 16,
+                                        background: "#C97B5A",
+                                        fontSize: 9, color: "#fff", fontWeight: 700,
+                                        border: "2px solid #fff",
+                                    }}
+                                >
+                                    {likedCount}
+                                </div>
+                            )}
+                        </div>
+                        <span
+                            className="font-medium"
+                            style={{ fontSize: 10.5, color: active ? TEAL : "#94a3b8" }}
+                        >
+                            {tab.label}
+                        </span>
+                    </button>
+                );
+            })}
+        </nav>
     );
 };
 

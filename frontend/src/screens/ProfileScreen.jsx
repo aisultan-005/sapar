@@ -17,44 +17,45 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
         onSettingsChange({ ...settings, [key]: val });
 
     return (
-        <div className={`flex flex-col h-full bg-white ${darkMode ? "dark-mode" : ""}`}>
+        <div
+            className={`flex flex-col h-full ${darkMode ? "dark-mode" : ""}`}
+            style={{ background: darkMode ? "#0f172a" : "#FAFAF7" }}
+        >
             {/* ── Header ── */}
             <div
-                className="relative px-5 pt-5 pb-6"
+                className="relative px-5 pt-6 pb-10 rounded-b-3xl overflow-hidden"
                 style={{
                     background: `linear-gradient(135deg, ${TEAL} 0%, ${TEAL_DARK} 100%)`,
                 }}
             >
-                <OrnamentPattern opacity={0.06} color="#fff" />
+                <OrnamentPattern opacity={0.08} color="#fff" />
                 {showClerk ? (
                     <ClerkProfileHeader />
                 ) : (
                     <div className="relative z-10 flex items-center gap-4">
                         <div
-                            className="flex items-center justify-center"
+                            className="flex items-center justify-center rounded-2xl"
                             style={{
-                                width: 64,
-                                height: 64,
-                                background: "rgba(255,255,255,0.15)",
+                                width: 72, height: 72,
+                                background: "rgba(255,255,255,0.18)",
+                                backdropFilter: "blur(10px)",
                             }}
                         >
-                            <ShanyrakIcon size={36} color="rgba(255,255,255,0.9)" />
+                            <ShanyrakIcon size={40} color="rgba(255,255,255,0.95)" />
                         </div>
                         <div>
-                            <h1
-                                className="text-white text-lg font-bold"
-                            >
+                            <h1 className="text-white text-xl font-bold font-display">
                                 Айдар Касымов
                             </h1>
-                            <p className="text-xs mt-1" style={{ color: "#80e0eb" }}>
+                            <p className="text-xs mt-1" style={{ color: "#A5F3FC" }}>
                                 Путешественник с 2024
                             </p>
                             <div
-                                className="flex items-center gap-1 mt-2 px-2 py-1"
-                                style={{ background: `${GOLD}30` }}
+                                className="flex items-center gap-1 mt-2 px-2.5 py-1 rounded-full"
+                                style={{ background: `${GOLD}35` }}
                             >
-                                <Star size={10} fill={GOLD} color={GOLD} />
-                                <span className="font-semibold" style={{ fontSize: 10, color: GOLD }}>
+                                <Star size={11} fill={GOLD} color={GOLD} />
+                                <span className="font-bold" style={{ fontSize: 10, color: "#FBBF24" }}>
                                     Premium
                                 </span>
                             </div>
@@ -66,41 +67,41 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
             {/* ── Settings ── */}
             <div
                 className={`flex-1 overflow-y-auto px-5 ${darkMode ? "dm-bg" : ""}`}
-                style={{ marginTop: -12 }}
+                style={{ marginTop: -20 }}
             >
                 {/* Language */}
                 <div
-                    className={`p-4 mb-3 ${darkMode ? "dm-card" : "bg-white"}`}
-                    style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
+                    className={`p-4 mb-3 rounded-2xl ${darkMode ? "dm-card" : "bg-white"}`}
+                    style={{ boxShadow: "0 4px 20px rgba(31,41,55,0.06)" }}
                 >
                     <div className="flex items-center gap-2 mb-3">
                         <Languages size={16} color={TEAL} />
                         <span
-                            className={`text-xs font-bold ${darkMode ? "dm-text" : "text-gray-700"}`}
+                            className={`text-sm font-bold ${darkMode ? "dm-text" : "text-ink"}`}
                         >
-              Язык интерфейса
-            </span>
+                            Язык интерфейса
+                        </span>
                     </div>
                     <div className="flex gap-2">
                         {["ҚАЗ", "РУС", "ENG"].map((l) => (
                             <button
                                 key={l}
                                 onClick={() => setLang(l)}
-                                className="flex-1 py-2 text-xs font-bold transition-all"
+                                className="flex-1 py-2.5 text-xs font-bold transition-all rounded-xl press-effect-soft"
                                 style={{
                                     background:
                                         lang === l
                                             ? TEAL
                                             : darkMode
-                                                ? "#475569"
-                                                : "#f1f5f9",
+                                                ? "#334155"
+                                                : "#F5F5F0",
                                     color:
                                         lang === l
                                             ? "#fff"
                                             : darkMode
                                                 ? "#e2e8f0"
                                                 : "#64748b",
-                                    boxShadow: lang === l ? `0 2px 8px ${TEAL}30` : "none",
+                                    boxShadow: lang === l ? `0 4px 14px ${TEAL}40` : "none",
                                 }}
                             >
                                 {l}
@@ -111,53 +112,44 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
 
                 {/* Privacy */}
                 <div
-                    className={`p-4 mb-3 ${darkMode ? "dm-card" : "bg-white"}`}
-                    style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
+                    className={`p-4 mb-3 rounded-2xl ${darkMode ? "dm-card" : "bg-white"}`}
+                    style={{ boxShadow: "0 4px 20px rgba(31,41,55,0.06)" }}
                 >
                     <div className="flex items-center gap-2 mb-3">
                         <Lock size={16} color={TEAL} />
                         <span
-                            className={`text-xs font-bold ${darkMode ? "dm-text" : "text-gray-700"}`}
+                            className={`text-sm font-bold ${darkMode ? "dm-text" : "text-ink"}`}
                         >
-              Приватность и данные
-            </span>
+                            Приватность и данные
+                        </span>
                     </div>
                     {[
-                        {
-                            label: "Геолокация",
-                            desc: "Для поиска мест рядом",
-                            key: "geoEnabled",
-                        },
-                        {
-                            label: "Аналитика",
-                            desc: "Помогает улучшать приложение",
-                            key: "analyticsEnabled",
-                        },
+                        { label: "Геолокация",  desc: "Для поиска мест рядом",         key: "geoEnabled" },
+                        { label: "Аналитика",   desc: "Помогает улучшать приложение",  key: "analyticsEnabled" },
                     ].map((item, i) => (
                         <div
                             key={i}
-                            className="flex items-center justify-between py-2"
+                            className="flex items-center justify-between py-2.5"
                             style={{
-                                borderBottom:
-                                    i < 1
-                                        ? `1px solid ${darkMode ? "#475569" : "#f1f5f9"}`
-                                        : "none",
+                                borderBottom: i < 1
+                                    ? `1px solid ${darkMode ? "#334155" : "#F1F0EC"}`
+                                    : "none",
                             }}
                         >
                             <div>
                                 <p
-                                    className={`text-sm font-medium ${
-                                        darkMode ? "dm-text" : "text-gray-700"
+                                    className={`text-sm font-semibold ${
+                                        darkMode ? "dm-text" : "text-ink"
                                     }`}
                                 >
                                     {item.label}
                                 </p>
                                 <p
                                     style={{
-                                        fontSize: 10,
-                                        color: darkMode ? "#94a3b8" : "#9ca3af",
+                                        fontSize: 11,
+                                        color: darkMode ? "#94a3b8" : "#9CA3AF",
                                     }}
-                                    className="mt-1"
+                                    className="mt-0.5"
                                 >
                                     {item.desc}
                                 </p>
@@ -173,53 +165,44 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
 
                 {/* App Settings */}
                 <div
-                    className={`p-4 mb-3 ${darkMode ? "dm-card" : "bg-white"}`}
-                    style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
+                    className={`p-4 mb-3 rounded-2xl ${darkMode ? "dm-card" : "bg-white"}`}
+                    style={{ boxShadow: "0 4px 20px rgba(31,41,55,0.06)" }}
                 >
                     <div className="flex items-center gap-2 mb-3">
                         <Bell size={16} color={TEAL} />
                         <span
-                            className={`text-xs font-bold ${darkMode ? "dm-text" : "text-gray-700"}`}
+                            className={`text-sm font-bold ${darkMode ? "dm-text" : "text-ink"}`}
                         >
-              Настройки
-            </span>
+                            Настройки
+                        </span>
                     </div>
                     {[
-                        {
-                            label: "Уведомления",
-                            desc: "Push-уведомления о маршрутах",
-                            key: "notifications",
-                        },
-                        {
-                            label: "Тёмная тема",
-                            desc: "Сберегите заряд батареи",
-                            key: "darkMode",
-                        },
+                        { label: "Уведомления", desc: "Push о маршрутах",       key: "notifications" },
+                        { label: "Тёмная тема", desc: "Сберегите заряд",        key: "darkMode" },
                     ].map((item, i) => (
                         <div
                             key={i}
-                            className="flex items-center justify-between py-2"
+                            className="flex items-center justify-between py-2.5"
                             style={{
-                                borderBottom:
-                                    i < 1
-                                        ? `1px solid ${darkMode ? "#475569" : "#f1f5f9"}`
-                                        : "none",
+                                borderBottom: i < 1
+                                    ? `1px solid ${darkMode ? "#334155" : "#F1F0EC"}`
+                                    : "none",
                             }}
                         >
                             <div>
                                 <p
-                                    className={`text-sm font-medium ${
-                                        darkMode ? "dm-text" : "text-gray-700"
+                                    className={`text-sm font-semibold ${
+                                        darkMode ? "dm-text" : "text-ink"
                                     }`}
                                 >
                                     {item.label}
                                 </p>
                                 <p
                                     style={{
-                                        fontSize: 10,
-                                        color: darkMode ? "#94a3b8" : "#9ca3af",
+                                        fontSize: 11,
+                                        color: darkMode ? "#94a3b8" : "#9CA3AF",
                                     }}
-                                    className="mt-1"
+                                    className="mt-0.5"
                                 >
                                     {item.desc}
                                 </p>
@@ -235,76 +218,87 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
 
                 {/* Premium Card */}
                 <div
-                    className="relative overflow-hidden p-4 mb-4"
-                    style={{ background: `linear-gradient(135deg, ${GOLD}15, ${SAND})` }}
+                    className="relative overflow-hidden p-5 mb-4 rounded-2xl"
+                    style={{
+                        background: `linear-gradient(135deg, ${GOLD}25, ${SAND})`,
+                        boxShadow: "0 6px 24px rgba(212, 168, 83, 0.18)",
+                    }}
                 >
-                    <div className="flex items-center gap-2 mb-2">
-                        <CreditCard size={16} color={GOLD} />
-                        <span className="text-xs font-bold text-gray-700">
-              Подписка Premium
-            </span>
+                    <OrnamentPattern opacity={0.06} color={GOLD} />
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                            <CreditCard size={16} color={GOLD} />
+                            <span className="text-sm font-bold text-ink font-display">
+                                Подписка Premium
+                            </span>
+                        </div>
+                        <p
+                            style={{ fontSize: 12, color: "#6B7280" }}
+                            className="mb-3"
+                        >
+                            AI-рекомендации, эксклюзивные маршруты, без рекламы
+                        </p>
+                        <div className="flex items-end gap-1 mb-3">
+                            <span className="text-3xl font-bold text-ink font-display">1 990 ₸</span>
+                            <span className="text-xs mb-1.5" style={{ color: "#9CA3AF" }}>
+                                / месяц
+                            </span>
+                        </div>
+                        <div className="mb-4 flex flex-col gap-1.5">
+                            {[
+                                "AI-маршруты без ограничений",
+                                "Офлайн-карты всех регионов",
+                                "Эксклюзивные скрытые места",
+                            ].map((f, i) => (
+                                <div key={i} className="flex items-center gap-2">
+                                    <div
+                                        className="flex items-center justify-center rounded-full"
+                                        style={{ width: 16, height: 16, background: GOLD }}
+                                    >
+                                        <Check size={10} color="#fff" strokeWidth={3} />
+                                    </div>
+                                    <span style={{ fontSize: 12, color: "#4B5563" }}>{f}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <button
+                            className="w-full py-2.5 text-white text-xs font-bold rounded-xl"
+                            style={{
+                                background: `linear-gradient(135deg, ${GOLD}, #B8860B)`,
+                                boxShadow: `0 4px 14px ${GOLD}50`,
+                            }}
+                        >
+                            Активировано ✓
+                        </button>
                     </div>
-                    <p
-                        style={{ fontSize: 11, color: "#6b7280" }}
-                        className="mb-3"
-                    >
-                        AI-рекомендации, эксклюзивные маршруты, без рекламы
-                    </p>
-                    <div className="flex items-end gap-1 mb-3">
-                        <span className="text-2xl font-bold text-gray-800">1 990 ₸</span>
-                        <span className="text-xs mb-1" style={{ color: "#9ca3af" }}>
-              / месяц
-            </span>
-                    </div>
-                    <div className="mb-3 flex flex-col gap-1">
-                        {[
-                            "AI-маршруты без ограничений",
-                            "Офлайн-карты всех регионов",
-                            "Эксклюзивные скрытые места",
-                        ].map((f, i) => (
-                            <div key={i} className="flex items-center gap-2">
-                                <Check size={12} color={GOLD} />
-                                <span style={{ fontSize: 11, color: "#4b5563" }}>{f}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <button
-                        className="w-full py-2 text-white text-xs font-bold"
-                        style={{
-                            background: `linear-gradient(135deg, ${GOLD}, #b8860b)`,
-                            boxShadow: `0 3px 12px ${GOLD}40`,
-                        }}
-                    >
-                        Активировано ✓
-                    </button>
                 </div>
 
                 {showClerk ? (
                     <ProfileAccountClerk darkMode={darkMode} />
                 ) : (
                     <div
-                        className={`p-4 mb-3 ${darkMode ? "dm-card" : "bg-white"}`}
-                        style={{ boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
+                        className={`p-4 mb-3 rounded-2xl ${darkMode ? "dm-card" : "bg-white"}`}
+                        style={{ boxShadow: "0 4px 20px rgba(31,41,55,0.06)" }}
                     >
                         <p
-                            className={`text-xs font-bold mb-2 ${darkMode ? "dm-text" : "text-gray-700"}`}
+                            className={`text-sm font-bold mb-2 ${darkMode ? "dm-text" : "text-ink"}`}
                         >
                             Аккаунт и выход
                         </p>
                         <p
                             className="text-sm mb-2"
-                            style={{ color: darkMode ? "#94a3b8" : "#6b7280" }}
+                            style={{ color: darkMode ? "#94a3b8" : "#6B7280" }}
                         >
                             Сейчас отображается демо-профиль. Кнопки «Выйти» и регистрация через Clerk
                             появятся после настройки ключа Clerk.
                         </p>
                         <p
                             className="text-xs leading-relaxed"
-                            style={{ color: darkMode ? "#64748b" : "#9ca3af" }}
+                            style={{ color: darkMode ? "#64748b" : "#9CA3AF" }}
                         >
-                            Скопируйте <code className="rounded bg-slate-100 px-1 py-0.5 text-[11px] text-slate-800 dark:bg-slate-700 dark:text-slate-100">frontend/.env.example</code> в{" "}
-                            <code className="rounded bg-slate-100 px-1 py-0.5 text-[11px] text-slate-800 dark:bg-slate-700 dark:text-slate-100">frontend/.env</code>, укажите{" "}
-                            <code className="rounded bg-slate-100 px-1 py-0.5 text-[11px] text-slate-800 dark:bg-slate-700 dark:text-slate-100">VITE_CLERK_PUBLISHABLE_KEY</code> из{" "}
+                            Скопируйте <code className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-800 dark:bg-slate-700 dark:text-slate-100">frontend/.env.example</code> в{" "}
+                            <code className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-800 dark:bg-slate-700 dark:text-slate-100">frontend/.env</code>, укажите{" "}
+                            <code className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-800 dark:bg-slate-700 dark:text-slate-100">VITE_CLERK_PUBLISHABLE_KEY</code> из{" "}
                             <a
                                 href="https://dashboard.clerk.com/"
                                 target="_blank"

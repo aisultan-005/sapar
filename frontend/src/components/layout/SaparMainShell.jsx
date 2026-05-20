@@ -9,6 +9,8 @@ import POIScreen       from "../../screens/POIScreen";
 import FavoritesScreen from "../../screens/FavoritesScreen";
 import ProfileScreen   from "../../screens/ProfileScreen";
 
+import AIRouteModal    from "../ui/AIRouteModal";
+
 import { useLikes }     from "../../hooks/useLikes";
 import { useItinerary } from "../../hooks/useItinerary";
 import { useSettings }  from "../../hooks/useSettings";
@@ -20,14 +22,25 @@ export default function SaparMainShell() {
     const [searchQuery, setSearchQuery] = useState("");
     const [activeFilter, setActiveFilter] = useState(null);
     const [offlineMode, setOfflineMode]   = useState(false);
+    const [aiModalOpen, setAiModalOpen]   = useState(false);
 
     const { likedIds, toggleLike }             = useLikes();
-    const { items, routeLocationIds, addToRoute, removeFromRoute, reorderItems } = useItinerary();
+    const { items, routeLocationIds, addToRoute, removeFromRoute, reorderItems, replaceItems } = useItinerary();
     const { settings, setSettings }            = useSettings();
 
     const handleLocationTap = (loc) => {
         setSelectedLocation(loc);
         setShowPOI(true);
+    };
+
+    const handleAIRouteClick = () => {
+        setAiModalOpen(true);
+    };
+
+    const handleAIResult = (data) => {
+        // data = { id, title, items: [...], isAI }
+        replaceItems(data.items);
+        setActiveTab(2); // переключаемся на вкладку Маршрут
     };
 
     const renderScreen = () => {
@@ -49,7 +62,7 @@ export default function SaparMainShell() {
             case 0: return (
                 <DiscoveryScreen
                     onLocationTap={handleLocationTap}
-                    onAIRoute={() => setActiveTab(2)}
+                    onAIRoute={handleAIRouteClick}
                     searchQuery={searchQuery}
                     onSearchChange={setSearchQuery}
                     activeFilter={activeFilter}
@@ -98,6 +111,12 @@ export default function SaparMainShell() {
                     likedCount={likedIds.size}
                 />
             )}
+
+            <AIRouteModal
+                open={aiModalOpen}
+                onClose={() => setAiModalOpen(false)}
+                onResult={handleAIResult}
+            />
         </div>
     );
 }

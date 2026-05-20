@@ -36,11 +36,23 @@ export const useItinerary = () => {
 
     const reorderItems = (newItems) => setItems(newItems);
 
+    /** Полная замена маршрута (используется AI-генерацией). */
+    const replaceItems = (newItems) => {
+        if (!Array.isArray(newItems)) return;
+        // Добавляем уникальные id для React key
+        const stamped = newItems.map((it, i) => ({
+            ...it,
+            id: it.id || Date.now() + i,
+        }));
+        setItems(stamped);
+    };
+
     return {
         items,
         routeLocationIds,
         addToRoute,
         removeFromRoute,
         reorderItems,
+        replaceItems,
     };
 };

@@ -1,118 +1,46 @@
-# Sapar Backend — Деплой на Render
+# Sapar — AI-кнопка теперь стучится в backend
 
-## Что сделано (изменения в коде)
-Backend подготовлен к работе на облачном сервере:
-- **CORS** теперь читается из переменной `CORS_ORIGINS` (раньше был прибит к localhost)
-- **MongoDB опциональна** — если URI не задан, сервер всё равно стартует, просто `/api/itinerary` отдаст 503. AI-роуты работают без БД.
-- **Clerk опционален** — если `CLERK_SECRET_KEY` не задан, мидлварь не подключается (раньше падало)
-- Добавлены **healthcheck-эндпоинты** `/` и `/health` — нужны Render'у, чтобы проверять что сервер жив
-- В `package.json` указан **Node 20+** (engines)
-- Добавлен **`render.yaml`** — Blueprint для автодеплоя
-- Добавлен **`backend/.env.example`** — образец переменных
+## Что было сломано
+Кнопка «Сгенерировать AI-маршрут» просто переключала вкладку на «Маршрут», где всегда показывался один и тот же предзаполненный маршрут из кода. AI вообще никогда не вызывался — даже до backend на Render.
 
-## Изменённые/новые файлы (7 штук)
-- `backend/package.json` — добавлен `engines`
-- `backend/.env.example` — новый, со всеми переменными
-- `backend/src/app.js` — CORS из env, healthcheck, Clerk/Mongo опциональны
-- `backend/src/config/env.js` — добавлен `corsOrigins`
-- `backend/src/config/mongo.connector.js` — не падает без БД
-- `backend/src/controllers/itinerary.controller.js` — graceful 503 без БД
-- `render.yaml` — Blueprint для Render (в корне репо)
+## Что теперь работает
+1. Клик по кнопке открывает **модалку с выбором**: интересы (теги), длительность (1-7 дней), бюджет
+2. Кнопка «Сгенерировать» отправляет `POST /api/ai/route` на твой Render-backend
+3. Backend через Groq генерирует маршрут и возвращает JSON
+4. Маршрут полностью заменяется новым + автоматический переход на вкладку «Маршрут»
+5. Показывается спиннер «Генерирую маршрут...» во время ожидания
+6. Понятные ошибки: «Сервис AI недоступен», «Нет связи с сервером», «Ошибка генерации»
 
-## Проверка работы
-✓ Backend стартует без MONGO_URI и GROQ_API_KEY (вернётся mock-маршрут)
-✓ `/health` отдаёт статус Mongo/Groq
-✓ `/api/locations` работает (использует mock-данные)
-✓ `/api/ai/route` работает (mock без ключа, реальный AI с ключом)
+## Изменённые файлы (3 штуки)
+- `frontend/src/components/ui/AIRouteModal.jsx` — **новый** файл, модалка
+- `frontend/src/components/layout/SaparMainShell.jsx` — подключение модалки + обработчик результата
+- `frontend/src/hooks/useItinerary.js` — новая функция `replaceItems`
 
----
-
-# 🚀 Деплой на Render — пошаговая инструкция
-
-## Шаг 1: Получи Groq ключ (если ещё не)
-1. Открой https://console.groq.com/keys
-2. Войди (можно через Google)
-3. **Create API Key** → дай имя «sapar» → скопируй ключ (вид `gsk_xxxxxxxxxxxxx`)
-4. **Сохрани его в блокноте** — больше его не покажут
-
-## Шаг 2: Залей изменения на GitHub
-1. Распакуй `sapar-render.zip`, перенеси файлы поверх своих в репо
-2. В терминале из корня проекта:
+## Как применить
+1. Распакуй архив, перенеси файлы поверх своих (с заменой)
+2. **`npm install` НЕ нужен** — никаких новых пакетов
+3. Закоммить:
    ```bash
    git add .
-   git commit -m "feat: backend ready for Render"
+   git commit -m "feat: AI route modal connected to backend"
    git push
    ```
+4. Vercel пересоберёт за 1-2 мин
 
-## Шаг 3: Создай Web Service на Render
-1. Открой https://dashboard.render.com
-2. Сверху справа: **New +** → **Web Service**
-3. Если Render видит твой GitHub — выбери репо `aisultan-005/sapar`.
-   Если не видит — нажми **Configure account** и разреши доступ к репо.
-4. В форме настройки:
-   - **Name:** `sapar-backend`
-   - **Region:** `Frankfurt (EU Central)` (ближе всего к Казахстану)
-   - **Branch:** `main`
-   - **Root Directory:** `backend` ← **ВАЖНО**, иначе соберёт фронт
-   - **Runtime:** `Node`
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
-   - **Instance Type:** `Free`
-5. Прокрути вниз до **Environment Variables**, добавь:
+## Как тестировать
+1. Открой сайт после деплоя
+2. На **Главной** нажми бирюзовый баннер AI
+3. Откроется модалка снизу — выбери теги (например «История» + «Природа»), длительность, бюджет
+4. Жми **«Сгенерировать»**
+5. Первый раз будет долго (~30 сек) — Render просыпается
+6. Должен прийти новый маршрут с разными местами
 
-   | Key | Value |
-   |---|---|
-   | `NODE_ENV` | `production` |
-   | `GROQ_API_KEY` | `gsk_...` (твой ключ из шага 1) |
-   | `GROQ_MODEL` | `openai/gpt-oss-20b` |
-   | `CORS_ORIGINS` | `https://ТВОЙ_VERCEL_ДОМЕН.vercel.app` (без слэша на конце!) |
+## Проверка работы AI
+Каждый клик «Сгенерировать» даёт **новый** маршрут (Groq креативит). Если каждый раз тот же — значит backend не получил GROQ_API_KEY и отдаёт mock. Проверь `/health` на Render → должно быть `"groq": "configured"`.
 
-   **`MONGO_URI` пока НЕ заполняй** — мы её добавим позже.
+## Если в модалке ошибка
+- **«Не удалось связаться с сервером»** — фронт не видит backend. Проверь `VITE_API_URL` на Vercel (должен оканчиваться на `/api`).
+- **«Сервис AI временно недоступен»** — backend упал. Зайди на Render → Logs.
+- **«Ошибка генерации»** — что-то с Groq. Логи Render покажут детали.
 
-6. Нажми **Create Web Service**
-7. Render начнёт сборку — это займёт 2–4 минуты. Жди статус **Live**.
-8. Скопируй URL сервиса сверху страницы — будет вида `https://sapar-backend-xxxx.onrender.com`
-
-## Шаг 4: Проверь что backend жив
-Открой в браузере: `https://sapar-backend-xxxx.onrender.com/health`
-
-Должен увидеть JSON:
-```json
-{
-  "status": "ok",
-  "name": "sapar-backend",
-  "mongo": "disconnected",
-  "groq": "configured",
-  ...
-}
-```
-Главное: `"groq": "configured"`. Если `"missing"` — переменная не доехала, перепроверь Environment.
-
-## Шаг 5: Подключи backend к фронту на Vercel
-1. Открой https://vercel.com → твой проект **sapar** → **Settings** → **Environment Variables**
-2. Добавь новую переменную:
-   - **Key:** `VITE_API_URL`
-   - **Value:** `https://sapar-backend-xxxx.onrender.com/api` ← **с `/api` на конце**
-   - **Environments:** все три галочки (Production, Preview, Development)
-3. Нажми **Save**
-4. **Передеплой фронта:** Vercel → Deployments → последний деплой → три точки → **Redeploy**
-5. После деплоя зайди на свой сайт, нажми «Сгенерировать AI-маршрут» — должно работать (первый запрос будет ~30 сек, потому что Render «просыпается» из режима сна)
-
-## Шаг 6 (опционально): MongoDB
-Пока не нужна — AI работает без неё. Когда захочешь сохранять маршруты пользователей — заведём MongoDB Atlas и добавим `MONGO_URI` в Render. Скажи в следующем чате.
-
----
-
-## Важные моменты
-
-### «Сон» сервера (Free план)
-Бесплатный Render усыпляет сервер после **15 минут без запросов**. Первый запрос после сна = ~30 сек ожидания. Для разработки/демо нормально, для прода поднимешь до Starter ($7/мес).
-
-### Если что-то сломалось
-- **Render Dashboard → твой сервис → Logs** — там вся диагностика
-- Сервер не стартует → смотри Build Logs (вероятно опечатка в env)
-- AI не отвечает → проверь что `/health` показывает `"groq": "configured"`
-- Фронт не видит бэк → проверь что `CORS_ORIGINS` точно совпадает с Vercel-доменом (без `/` на конце, c `https://`)
-
-### Render Blueprint (альтернатива, для гика)
-В архиве лежит `render.yaml`. Если в шаге 3 вместо «New Web Service» выбрать **New + → Blueprint**, Render прочитает этот файл и создаст сервис автоматически — но env-переменные всё равно придётся вписать руками. Лень — используй обычный путь выше.
+Открывай DevTools (F12) → Network → нажми «Сгенерировать» — увидишь запрос к `onrender.com/api/ai/route` с его статусом.

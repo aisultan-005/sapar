@@ -7,10 +7,14 @@ const mongooseOptions = {
 };
 
 /**
- * Подключение к MongoDB для бэкенда сайта (Mongoose).
- * URI берётся из MONGO_URI или, если не задан, из локального fallback в env.js.
+ * Подключение к MongoDB. Если MONGO_URI не задан или подключение упало,
+ * сервер всё равно стартует — просто эндпоинты, требующие БД, вернут 503.
  */
 export async function connectDB() {
+    if (!config.mongoUri) {
+        console.warn("⚠️  MONGO_URI не задан — Mongo отключена (AI-эндпоинты работают, /api/itinerary вернёт 503).");
+        return null;
+    }
     if (mongoose.connection.readyState === 1) {
         return mongoose.connection;
     }
@@ -20,9 +24,12 @@ export async function connectDB() {
         return conn;
     } catch (err) {
         console.error("❌ MongoDB connection error:", err.message);
-        process.exit(1);
+        console.warn("⚠️  Сервер продолжит работу без БД.");
+        return null;
     }
 }
+
+export const isMongoConnected = () => mongoose.connection.readyState === 1;
 
 export async function disconnectDB() {
     if (mongoose.connection.readyState === 0) return;

@@ -1,0 +1,28 @@
+# === Render Blueprint для Sapar Backend ===
+# Render автоматически создаст сервис по этому файлу.
+# Документация: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: sapar-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    region: frankfurt
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GROQ_API_KEY
+        sync: false           # секрет — задаётся вручную в Dashboard
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+      - key: MONGO_URI
+        sync: false           # пусто пока — backend стартует без базы
+      - key: CORS_ORIGINS
+        sync: false           # сюда ваш Vercel-домен
+      - key: CLERK_SECRET_KEY
+        sync: false           # опционально

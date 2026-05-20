@@ -5,6 +5,7 @@ import {
 import ScenePlaceholder from "../components/ui/ScenePlaceholder";
 import { TEAL, TEAL_DARK, GOLD, TERRA } from "../constants/theme";
 import { allLocations } from "../data/locations";
+import { useLang } from "../i18n/LanguageContext";
 
 const POIScreen = ({
                        location,
@@ -14,6 +15,7 @@ const POIScreen = ({
                        isInRoute,
                        onAddToRoute,
                    }) => {
+    const { t } = useLang();
     const loc = location || allLocations[2];
 
     return (
@@ -43,7 +45,7 @@ const POIScreen = ({
                         backdropFilter: "blur(8px)",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                     }}
-                    aria-label="Назад"
+                    aria-label="Back"
                 >
                     <ArrowLeft size={20} color="#1F2937" />
                 </button>
@@ -58,7 +60,7 @@ const POIScreen = ({
                         backdropFilter: "blur(8px)",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                     }}
-                    aria-label={isLiked ? "Убрать из избранного" : "Добавить в избранное"}
+                    aria-label="Toggle favorite"
                 >
                     <Heart
                         size={20}
@@ -78,7 +80,7 @@ const POIScreen = ({
                             className="font-semibold uppercase text-white"
                             style={{ fontSize: 10, letterSpacing: "0.1em" }}
                         >
-                            Проверено Sapar
+                            {t("verified")}
                         </span>
                     </div>
                     <h1 className="text-white text-3xl font-bold font-display leading-tight">
@@ -115,7 +117,7 @@ const POIScreen = ({
                     >
                         <div className="rounded-full" style={{ width: 6, height: 6, background: "#22c55e" }} />
                         <span className="font-semibold" style={{ fontSize: 11, color: "#15803d" }}>
-                            Открыто сейчас
+                            {t("openNow")}
                         </span>
                     </div>
                 </div>
@@ -124,7 +126,7 @@ const POIScreen = ({
                 <div className="px-5 mt-3 flex items-center gap-2">
                     <Clock size={14} color="#9CA3AF" />
                     <span className="text-xs" style={{ color: "#6B7280" }}>
-                        09:00 – 18:00 · Ежедневно
+                        {t("hours")}
                     </span>
                 </div>
 
@@ -144,27 +146,24 @@ const POIScreen = ({
                 {/* Description */}
                 <div className="px-5 mt-5">
                     <h3 className="text-sm font-bold text-ink mb-2 font-display">
-                        О месте
+                        {t("about")}
                     </h3>
                     <p className="text-sm leading-relaxed" style={{ color: "#4B5563" }}>
-                        Одно из самых популярных мест Казахстана. Здесь вы найдёте
-                        уникальное сочетание природной красоты, богатой истории и
-                        гостеприимства местных жителей. Идеальное место для семейного
-                        отдыха и культурного обогащения.
+                        {t("aboutText")}
                     </p>
                 </div>
 
                 {/* Safety & Accessibility */}
                 <div className="px-5 mt-5">
                     <h3 className="text-sm font-bold text-ink mb-3 font-display">
-                        Безопасность и доступность
+                        {t("safetySection")}
                     </h3>
                     <div className="grid grid-cols-2 gap-2">
                         {[
-                            { icon: Baby,          label: "Для детей",        ok: true  },
-                            { icon: Accessibility, label: "Маломобильным",    ok: true  },
-                            { icon: Shield,        label: "Безопасно",        ok: true  },
-                            { icon: Phone,         label: "Связь доступна",   ok: false },
+                            { icon: Baby,          label: t("safetyKids"),       ok: true  },
+                            { icon: Accessibility, label: t("safetyAccessible"), ok: true  },
+                            { icon: Shield,        label: t("safetySafe"),       ok: true  },
+                            { icon: Phone,         label: t("safetyConnection"), ok: false },
                         ].map((item, i) => {
                             const Icon = item.icon;
                             return (
@@ -200,14 +199,12 @@ const POIScreen = ({
                                 : `linear-gradient(135deg, ${TEAL} 0%, ${TEAL_DARK} 100%)`,
                             boxShadow: `0 8px 24px ${isInRoute ? "#16a34a" : TEAL}40`,
                         }}
-                        aria-label={
-                            isInRoute ? "Уже в маршруте" : "Добавить в маршрут"
-                        }
+                        aria-label={isInRoute ? t("inRoute") : t("addToRoute")}
                     >
                         {isInRoute ? (
-                            <><Check size={18} /> Добавлено в маршрут</>
+                            <><Check size={18} /> {t("inRoute")}</>
                         ) : (
-                            <><Plus size={18} /> Добавить в маршрут</>
+                            <><Plus size={18} /> {t("addToRoute")}</>
                         )}
                     </button>
                 </div>

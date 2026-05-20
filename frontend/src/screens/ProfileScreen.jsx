@@ -11,7 +11,7 @@ import { useLang } from "../i18n/LanguageContext";
 
 const ProfileScreen = ({ settings, onSettingsChange }) => {
     const { darkMode } = settings;
-    const { lang, setLang } = useLang();
+    const { lang, setLang, t } = useLang();
 
     const update = (key, val) =>
         onSettingsChange({ ...settings, [key]: val });
@@ -45,10 +45,10 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
                         </div>
                         <div>
                             <h1 className="text-white text-xl font-bold font-display">
-                                Айдар Касымов
+                                {t("userName")}
                             </h1>
                             <p className="text-xs mt-1" style={{ color: "#A5F3FC" }}>
-                                Путешественник с 2024
+                                {t("userSubtitle")}
                             </p>
                             <div
                                 className="flex items-center gap-1 mt-2 px-2.5 py-1 rounded-full"
@@ -79,7 +79,7 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
                         <span
                             className={`text-sm font-bold ${darkMode ? "dm-text" : "text-ink"}`}
                         >
-                            Язык интерфейса
+                            {t("language")}
                         </span>
                     </div>
                     <div className="flex gap-2">
@@ -120,12 +120,12 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
                         <span
                             className={`text-sm font-bold ${darkMode ? "dm-text" : "text-ink"}`}
                         >
-                            Приватность и данные
+                            {t("privacy")}
                         </span>
                     </div>
                     {[
-                        { label: "Геолокация",  desc: "Для поиска мест рядом",         key: "geoEnabled" },
-                        { label: "Аналитика",   desc: "Помогает улучшать приложение",  key: "analyticsEnabled" },
+                        { label: t("privGeo"),       desc: t("privGeoDesc"),       key: "geoEnabled" },
+                        { label: t("privAnalytics"), desc: t("privAnalyticsDesc"), key: "analyticsEnabled" },
                     ].map((item, i) => (
                         <div
                             key={i}
@@ -173,12 +173,12 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
                         <span
                             className={`text-sm font-bold ${darkMode ? "dm-text" : "text-ink"}`}
                         >
-                            Настройки
+                            {t("appSettings")}
                         </span>
                     </div>
                     {[
-                        { label: "Уведомления", desc: "Push о маршрутах",       key: "notifications" },
-                        { label: "Тёмная тема", desc: "Сберегите заряд",        key: "darkMode" },
+                        { label: t("notif"),     desc: t("notifDesc"),     key: "notifications" },
+                        { label: t("darkTheme"), desc: t("darkThemeDesc"), key: "darkMode" },
                     ].map((item, i) => (
                         <div
                             key={i}
@@ -229,27 +229,23 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
                         <div className="flex items-center gap-2 mb-2">
                             <CreditCard size={16} color={GOLD} />
                             <span className="text-sm font-bold text-ink font-display">
-                                Подписка Premium
+                                {t("premiumTitle")}
                             </span>
                         </div>
                         <p
                             style={{ fontSize: 12, color: "#6B7280" }}
                             className="mb-3"
                         >
-                            AI-рекомендации, эксклюзивные маршруты, без рекламы
+                            {t("premiumDesc")}
                         </p>
                         <div className="flex items-end gap-1 mb-3">
                             <span className="text-3xl font-bold text-ink font-display">1 990 ₸</span>
                             <span className="text-xs mb-1.5" style={{ color: "#9CA3AF" }}>
-                                / месяц
+                                {t("premiumPerMonth")}
                             </span>
                         </div>
                         <div className="mb-4 flex flex-col gap-1.5">
-                            {[
-                                "AI-маршруты без ограничений",
-                                "Офлайн-карты всех регионов",
-                                "Эксклюзивные скрытые места",
-                            ].map((f, i) => (
+                            {[t("premiumF1"), t("premiumF2"), t("premiumF3")].map((f, i) => (
                                 <div key={i} className="flex items-center gap-2">
                                     <div
                                         className="flex items-center justify-center rounded-full"
@@ -268,7 +264,7 @@ const ProfileScreen = ({ settings, onSettingsChange }) => {
                                 boxShadow: `0 4px 14px ${GOLD}50`,
                             }}
                         >
-                            Активировано ✓
+                            {t("premiumActive")}
                         </button>
                     </div>
                 </div>

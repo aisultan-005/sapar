@@ -2,6 +2,7 @@ import { ChevronUp, ChevronDown, Map, Trash2, Wifi, WifiOff } from "lucide-react
 import OrnamentPattern from "../components/ui/OrnamentPattern";
 import ShanyrakIcon    from "../components/ui/ShanyrakIcon";
 import { TEAL, TEAL_DARK, GOLD, WARM } from "../constants/theme";
+import { useLang } from "../i18n/LanguageContext";
 
 const iconMap = { food: "🍽️", nature: "🏔️", stay: "🏕️", added: "📍" };
 
@@ -12,6 +13,7 @@ const ItineraryScreen = ({
                              onOfflineModeChange,
                              onRemoveItem,
                          }) => {
+    const { t } = useLang();
     const moveItem = (index, dir) => {
         const newItems = [...items];
         const target = index + dir;
@@ -37,17 +39,17 @@ const ItineraryScreen = ({
                                 className="text-xs tracking-wider uppercase font-medium"
                                 style={{ color: "#A5F3FC", letterSpacing: "0.18em" }}
                             >
-                                Ваш маршрут
+                                {t("routeEyebrow")}
                             </p>
                             <h1 className="text-white text-2xl font-bold mt-1 font-display">
-                                Алматинская область
+                                {t("routeTitle")}
                             </h1>
                         </div>
                         <div
                             className="px-3 py-1.5 text-xs font-semibold rounded-full"
                             style={{ background: "rgba(255,255,255,0.22)", color: "#fff" }}
                         >
-                            1 день
+                            {t("routeDays")}
                         </div>
                     </div>
 
@@ -66,7 +68,7 @@ const ItineraryScreen = ({
                                 className="text-xs font-semibold"
                                 style={{ color: "rgba(255,255,255,0.95)" }}
                             >
-                                Доступно офлайн
+                                {t("offlineAvailable")}
                             </span>
                         </div>
                         <button
@@ -106,10 +108,10 @@ const ItineraryScreen = ({
                             <Map size={40} color={TEAL} strokeWidth={1.8} />
                         </div>
                         <p className="text-base font-bold text-ink mb-1.5 font-display">
-                            Маршрут пуст
+                            {t("routeEmpty")}
                         </p>
                         <p className="text-xs text-center text-gray-400">
-                            Добавляйте места с главного экрана
+                            {t("routeEmptyHint")}
                         </p>
                     </div>
                 ) : (
@@ -234,14 +236,14 @@ const ItineraryScreen = ({
                         <div className="flex items-center gap-2 mb-3">
                             <ShanyrakIcon size={22} color={GOLD} />
                             <span className="text-sm font-bold text-ink font-display">
-                                Итого по маршруту
+                                {t("routeSummary")}
                             </span>
                         </div>
                         <div className="grid grid-cols-3 gap-3">
                             {[
-                                { label: "Расстояние", value: "280 км" },
-                                { label: "Время",      value: "~4.5ч" },
-                                { label: "Бюджет",     value: "~25к ₸" },
+                                { label: t("sumDistance"), value: "280 км" },
+                                { label: t("sumTime"),     value: "~4.5ч" },
+                                { label: t("sumBudget"),   value: "~25к ₸" },
                             ].map((s, i) => (
                                 <div
                                     key={i}

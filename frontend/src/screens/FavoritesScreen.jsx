@@ -3,10 +3,12 @@ import OrnamentPattern  from "../components/ui/OrnamentPattern";
 import ScenePlaceholder from "../components/ui/ScenePlaceholder";
 import { TEAL, TEAL_DARK, GOLD, TERRA } from "../constants/theme";
 import { allLocations, nearbyPlaces } from "../data/locations";
+import { useLang } from "../i18n/LanguageContext";
 
 const allPlaces = [...allLocations, ...nearbyPlaces];
 
 const FavoritesScreen = ({ likedIds, onLocationTap, onToggleLike }) => {
+    const { t } = useLang();
     const likedPlaces = allPlaces.filter((p) => likedIds.has(p.id));
 
     return (
@@ -24,14 +26,14 @@ const FavoritesScreen = ({ likedIds, onLocationTap, onToggleLike }) => {
                         className="text-xs tracking-wider uppercase font-medium"
                         style={{ color: "#A5F3FC", letterSpacing: "0.18em" }}
                     >
-                        Коллекция
+                        {t("favEyebrow")}
                     </p>
                     <h1 className="text-white text-2xl font-bold mt-1 font-display">
-                        Избранные места
+                        {t("favTitle")}
                     </h1>
                     {likedPlaces.length > 0 && (
                         <p className="text-xs mt-1.5" style={{ color: "rgba(255,255,255,0.75)" }}>
-                            {likedPlaces.length} {likedPlaces.length === 1 ? "место" : "мест"} сохранено
+                            {likedPlaces.length} {likedPlaces.length === 1 ? t("favSavedOne") : t("favSavedMany")}
                         </p>
                     )}
                 </div>
@@ -48,10 +50,10 @@ const FavoritesScreen = ({ likedIds, onLocationTap, onToggleLike }) => {
                             <Heart size={40} color={TERRA} strokeWidth={1.8} />
                         </div>
                         <p className="text-base font-bold text-ink mb-1.5 font-display">
-                            Пока пусто
+                            {t("favEmpty")}
                         </p>
                         <p className="text-xs text-center leading-relaxed" style={{ color: "#9CA3AF" }}>
-                            Нажмите ♡ на любой достопримечательности,<br/>чтобы сохранить её здесь
+                            {t("favEmptyHint")}
                         </p>
                     </div>
                 ) : (

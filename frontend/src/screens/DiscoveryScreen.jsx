@@ -57,7 +57,7 @@ const DiscoveryScreen = ({
                                 className="text-xs tracking-wider uppercase font-medium"
                                 style={{ color: "#A5F3FC", letterSpacing: "0.18em" }}
                             >
-                                Сәлем!
+                                {t("hello")}
                             </p>
                             <h1 className="text-white text-2xl font-bold mt-1 font-display">
                                 {t("whereTo")}
@@ -178,10 +178,10 @@ const DiscoveryScreen = ({
                         </div>
                         <div className="relative z-10 flex-1 text-left">
                             <p className="text-white font-bold text-sm font-display">
-                                Сгенерировать AI-маршрут
+                                {t("aiTitle")}
                             </p>
                             <p className="text-xs mt-1" style={{ color: "#A5F3FC" }}>
-                                Умный планировщик подберёт идеальный путь
+                                {t("aiSubtitle")}
                             </p>
                         </div>
                         <ChevronRight
@@ -196,21 +196,21 @@ const DiscoveryScreen = ({
                 <div className="px-5 pt-2 pb-3">
                     <div className="flex items-center justify-between mb-3">
                         <h2 className="text-base font-bold text-ink font-display">
-                            Популярные направления
+                            {t("popular")}
                         </h2>
                         <button
                             className="text-xs font-semibold"
                             style={{ color: TEAL }}
                             aria-label="Показать все направления"
                         >
-                            Все →
+                            {t("seeAll")} →
                         </button>
                     </div>
 
                     {filteredLocations.length === 0 ? (
                         <div className="text-center py-10">
                             <Search size={32} color="#d1d5db" style={{ margin: "0 auto 8px" }} />
-                            <p className="text-xs text-gray-400">Ничего не найдено</p>
+                            <p className="text-xs text-gray-400">{t("searchEmpty")}</p>
                         </div>
                     ) : (
                         <div
@@ -266,11 +266,11 @@ const DiscoveryScreen = ({
                 {/* ── Nearby ── */}
                 <div className="px-5 pb-4">
                     <h2 className="text-base font-bold text-ink mb-3 font-display">
-                        Рядом с вами
+                        {t("nearby")}
                     </h2>
                     {filteredNearby.length === 0 && (
                         <p className="text-xs text-gray-400 text-center py-4">
-                            Нет результатов
+                            {t("noResults")}
                         </p>
                     )}
                     {filteredNearby.map((item) => (

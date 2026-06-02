@@ -100,7 +100,8 @@ export default function SaparMainShell() {
     };
 
     return (
-        <div className="fixed top-0 left-0 z-50 flex app-shell w-full flex-col overflow-y-auto bg-white font-sans text-slate-900 antialiased">
+        <div className="app-backdrop fixed inset-0 z-50 flex justify-center">
+            <div className="app-shell relative flex w-full max-w-[460px] flex-col overflow-y-auto bg-white font-sans text-slate-900 antialiased shadow-2xl">
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 {renderScreen()}
             </div>
@@ -118,6 +119,7 @@ export default function SaparMainShell() {
                 onClose={() => setAiModalOpen(false)}
                 onResult={handleAIResult}
             />
+            </div>
         </div>
     );
 }

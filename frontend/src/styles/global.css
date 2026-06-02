@@ -137,3 +137,32 @@ html.dark .leaflet-control-zoom a    { background: #1e293b !important; color: #e
     height: 100vh;       /* запасной вариант для старых браузеров */
     height: 100dvh;      /* реальная высота без нижней панели браузера */
 }
+
+/* === Этно-акцент под заголовками разделов (золото → терракота) === */
+h2.font-display {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 8px;
+}
+h2.font-display::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 42px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #D4A853 0%, #C97B5A 100%);
+}
+/* маленький ромб-оберег в конце линии */
+h2.font-display::before {
+    content: "";
+    position: absolute;
+    left: 48px;
+    bottom: -1px;
+    width: 6px;
+    height: 6px;
+    background: #C97B5A;
+    transform: rotate(45deg);
+    border-radius: 1px;
+}

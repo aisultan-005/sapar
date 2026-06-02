@@ -18,7 +18,7 @@ const BottomNavbar = ({ activeTab, onTabChange, likedCount }) => {
         <nav
             className="flex items-center justify-around px-2 bg-white"
             style={{
-                paddingBottom: 28,
+                paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)",
                 paddingTop: 14,
                 borderTop: "1px solid #F1F0EC",
                 boxShadow: "0 -4px 20px rgba(31, 41, 55, 0.04)",

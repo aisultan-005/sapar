@@ -1,7 +1,7 @@
-cat > frontend/src/components/ui/ScenePlaceholder.jsx << 'EOF'
 import { useState } from "react";
 import { GOLD } from "../../constants/theme";
 
+// Ключевые слова для фото каждого места (можно заменить на свои URL ниже)
 const PHOTOS = {
     almaty:    "kazakhstan,almaty,mountains",
     astana:    "astana,kazakhstan,city",
@@ -20,6 +20,7 @@ const PHOTOS = {
     sayram:    "sayram,kazakhstan,nature",
 };
 
+// Порядковый номер -> стабильная картинка (не меняется при перезагрузке)
 const LOCK = Object.keys(PHOTOS).reduce((m, k, i) => ((m[k] = i + 1), m), {});
 
 const photoUrl = (type, image) =>
@@ -28,6 +29,7 @@ const photoUrl = (type, image) =>
         ? `https://loremflickr.com/640/480/${PHOTOS[type]}?lock=${LOCK[type] || 1}`
         : null);
 
+// Декоративные градиентные сцены (показываются как фон / запасной вариант)
 const Scene = ({ type }) => {
     const scenes = {
         almaty: (
@@ -102,4 +104,3 @@ const ScenePlaceholder = ({ type, className = "", style = {}, image }) => {
 };
 
 export default ScenePlaceholder;
-EOF

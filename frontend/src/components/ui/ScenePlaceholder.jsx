@@ -6,9 +6,12 @@ const commons = (file) =>
     `https://commons.wikimedia.org/wiki/Special:FilePath/${file}?width=640`;
 
 const OVERRIDE = {
-    kolsai:   commons("2nd_Kolsay_Lake_01.jpg"),
-    balkhash: commons("Lake_Balkhash%2C_Kazakhstan.jpg"),
-    sayram:   commons("Sayram-Ugam.jpg"),
+    kolsai:    commons("2nd_Kolsay_Lake_01.jpg"),
+    sayram:    commons("Sayram-Ugam.jpg"),
+    mangystau: commons("Airakty_Shomanai_Mountains_in_Mangystau_Region%2C_Kazakhstan_%28April_2024%29.jpg"),
+    okzhetpes: commons("Burabay_020000%2C_Kazakhstan_-_panoramio.jpg"),
+    alakol:    commons("Evening_on_Alakol_lake.jpg"),
+    balkhash:  commons("Lake_Balkhash%2C_Alakol_Biosphere_Reserve%2C_Kazakhstan_-_April_29th%2C_2019_%2832796660517%29.jpg"),
 };
 
 // Остальные места -> статья Википедии (берём её главное фото)

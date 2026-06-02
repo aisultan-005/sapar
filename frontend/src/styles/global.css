@@ -105,3 +105,29 @@ html.dark [style*="9CA3AF"]          { color: #94a3b8 !important; }
 html.dark [style*="F1F0EC"]          { border-color: #334155 !important; }
 html.dark .leaflet-container         { background: #1e293b; }
 html.dark .leaflet-control-zoom a    { background: #1e293b !important; color: #e2e8f0 !important; }
+
+/* === Плавное появление карточек (по очереди) === */
+.stagger-in > * { animation: fadeSlideIn 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.stagger-in > *:nth-child(1)  { animation-delay: 0.03s; }
+.stagger-in > *:nth-child(2)  { animation-delay: 0.08s; }
+.stagger-in > *:nth-child(3)  { animation-delay: 0.13s; }
+.stagger-in > *:nth-child(4)  { animation-delay: 0.18s; }
+.stagger-in > *:nth-child(5)  { animation-delay: 0.23s; }
+.stagger-in > *:nth-child(6)  { animation-delay: 0.28s; }
+.stagger-in > *:nth-child(7)  { animation-delay: 0.33s; }
+.stagger-in > *:nth-child(8)  { animation-delay: 0.38s; }
+.stagger-in > *:nth-child(n+9){ animation-delay: 0.43s; }
+
+/* === Мягкий подъём карточки при наведении (для браузера) === */
+@media (hover: hover) {
+    .press-effect:hover,
+    .press-effect-soft:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(31, 41, 55, 0.14);
+    }
+}
+
+/* === Уважение к настройке "уменьшить движение" === */
+@media (prefers-reduced-motion: reduce) {
+    *, .stagger-in > * { animation: none !important; transition: none !important; }
+}

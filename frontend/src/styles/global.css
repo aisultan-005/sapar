@@ -166,3 +166,7 @@ h2.font-display::before {
     transform: rotate(45deg);
     border-radius: 1px;
 }
+
+/* === Фон по бокам приложения (на широком экране) === */
+.app-backdrop { background: #E2E5EA; }
+html.dark .app-backdrop { background: #020617; }

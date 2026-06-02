@@ -214,7 +214,7 @@ const DiscoveryScreen = ({
                         </div>
                     ) : (
                         <div
-                            className="flex gap-3 overflow-x-auto pb-2"
+                            className="flex gap-3 overflow-x-auto pb-2 stagger-in"
                             style={{ scrollbarWidth: "none" }}
                         >
                             {filteredLocations.map((loc) => (

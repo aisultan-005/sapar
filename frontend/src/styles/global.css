@@ -131,3 +131,9 @@ html.dark .leaflet-control-zoom a    { background: #1e293b !important; color: #e
 @media (prefers-reduced-motion: reduce) {
     *, .stagger-in > * { animation: none !important; transition: none !important; }
 }
+
+/* === Высота приложения: реальная видимая область (фикс нижних кнопок в браузере) === */
+.app-shell {
+    height: 100vh;       /* запасной вариант для старых браузеров */
+    height: 100dvh;      /* реальная высота без нижней панели браузера */
+}

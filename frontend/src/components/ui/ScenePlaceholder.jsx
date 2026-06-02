@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
 import { GOLD } from "../../constants/theme";
 
-// Каждое место -> статья в Википедии (берём её главное фото)
+// Прямые ссылки на конкретные хорошие фото (Wikimedia, свободная лицензия)
+const commons = (file) =>
+    `https://commons.wikimedia.org/wiki/Special:FilePath/${file}?width=640`;
+
+const OVERRIDE = {
+    kolsai:   commons("2nd_Kolsay_Lake_01.jpg"),
+    balkhash: commons("Lake_Balkhash%2C_Kazakhstan.jpg"),
+    sayram:   commons("Sayram-Ugam.jpg"),
+};
+
+// Остальные места -> статья Википедии (берём её главное фото)
 const WIKI = {
     almaty:    "Almaty",
     astana:    "Astana",
     turkestan: "Turkistan,_Kazakhstan",
     burabay:   "Burabay_National_Park",
     charyn:    "Charyn_Canyon",
-    kolsai:    "Kolsai_Lakes",
+    kolsai:    "Kolsay_Lakes_National_Park",
     kaindy:    "Lake_Kaindy",
     shymkent:  "Shymkent",
     mangystau: "Bozjyra",
@@ -16,8 +26,8 @@ const WIKI = {
     alakol:    "Alakol",
     baikonur:  "Baikonur_Cosmodrome",
     balkhash:  "Lake_Balkhash",
-    taraz:     "Taraz",
-    sayram:    "Sayram,_Kazakhstan",
+    taraz:     "Aisha_Bibi",
+    sayram:    "Sayram-Ugam_National_Park",
 };
 
 const cache = {}; // запоминаем найденные фото, чтобы не грузить повторно
@@ -76,10 +86,10 @@ const Scene = ({ type }) => {
 };
 
 const ScenePlaceholder = ({ type, className = "", style = {}, image }) => {
-    const [src, setSrc] = useState(image || cache[type] || null);
+    const [src, setSrc] = useState(image || OVERRIDE[type] || cache[type] || null);
 
     useEffect(() => {
-        if (image || cache[type] || !WIKI[type]) return;
+        if (image || OVERRIDE[type] || cache[type] || !WIKI[type]) return;
         let alive = true;
         fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${WIKI[type]}`)
             .then((r) => r.json())

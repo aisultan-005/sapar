@@ -83,10 +83,25 @@ body {
     border-radius: 6px 0 0 0 !important;
 }
 
-/* === Dark mode === */
+/* === Dark mode (экран Профиля) === */
 .dark-mode            { background: #0f172a !important; color: #e2e8f0 !important; }
 .dark-mode .dm-bg     { background: #1e293b !important; }
 .dark-mode .dm-card   { background: #1e293b !important; }
 .dark-mode .dm-text   { color: #e2e8f0 !important; }
 .dark-mode .dm-subtext{ color: #94a3b8 !important; }
 .dark-mode .dm-border { border-color: #334155 !important; }
+
+/* === Глобальная тёмная тема (всё приложение) === */
+html.dark body                       { background: #0f172a; color: #e2e8f0; }
+html.dark [style*="FAFAF7"]          { background-color: #0f172a !important; }
+html.dark [style*="FFF8F0"],
+html.dark [style*="FAF3E3"]          { background-color: #1e293b !important; }
+html.dark .bg-white                  { background-color: #1e293b !important; }
+html.dark .card-base                 { background: #1e293b; box-shadow: 0 4px 20px rgba(0,0,0,0.45); }
+html.dark .text-ink                  { color: #e2e8f0 !important; }
+html.dark [style*="1F2937"]          { color: #e2e8f0 !important; }
+html.dark [style*="6B7280"],
+html.dark [style*="9CA3AF"]          { color: #94a3b8 !important; }
+html.dark [style*="F1F0EC"]          { border-color: #334155 !important; }
+html.dark .leaflet-container         { background: #1e293b; }
+html.dark .leaflet-control-zoom a    { background: #1e293b !important; color: #e2e8f0 !important; }

@@ -1,35 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GOLD } from "../../constants/theme";
 
-// Ключевые слова для фото каждого места (можно заменить на свои URL ниже)
-const PHOTOS = {
-    almaty:    "kazakhstan,almaty,mountains",
-    astana:    "astana,kazakhstan,city",
-    turkestan: "turkestan,kazakhstan,mausoleum",
-    burabay:   "burabay,kazakhstan,lake",
-    charyn:    "charyn,canyon,kazakhstan",
-    kolsai:    "kolsai,lake,kazakhstan",
-    kaindy:    "kaindy,lake,kazakhstan",
-    shymkent:  "shymkent,kazakhstan",
-    mangystau: "mangystau,kazakhstan,desert",
-    okzhetpes: "burabay,rock,kazakhstan",
-    alakol:    "alakol,lake,kazakhstan",
-    baikonur:  "baikonur,rocket,space",
-    balkhash:  "balkhash,lake,kazakhstan",
-    taraz:     "taraz,kazakhstan,city",
-    sayram:    "sayram,kazakhstan,nature",
+// Каждое место -> статья в Википедии (берём её главное фото)
+const WIKI = {
+    almaty:    "Almaty",
+    astana:    "Astana",
+    turkestan: "Turkistan,_Kazakhstan",
+    burabay:   "Burabay_National_Park",
+    charyn:    "Charyn_Canyon",
+    kolsai:    "Kolsai_Lakes",
+    kaindy:    "Lake_Kaindy",
+    shymkent:  "Shymkent",
+    mangystau: "Bozjyra",
+    okzhetpes: "Okzhetpes",
+    alakol:    "Alakol",
+    baikonur:  "Baikonur_Cosmodrome",
+    balkhash:  "Lake_Balkhash",
+    taraz:     "Taraz",
+    sayram:    "Sayram,_Kazakhstan",
 };
 
-// Порядковый номер -> стабильная картинка (не меняется при перезагрузке)
-const LOCK = Object.keys(PHOTOS).reduce((m, k, i) => ((m[k] = i + 1), m), {});
+const cache = {}; // запоминаем найденные фото, чтобы не грузить повторно
 
-const photoUrl = (type, image) =>
-    image ||
-    (PHOTOS[type]
-        ? `https://loremflickr.com/640/480/${PHOTOS[type]}?lock=${LOCK[type] || 1}`
-        : null);
-
-// Декоративные градиентные сцены (показываются как фон / запасной вариант)
 const Scene = ({ type }) => {
     const scenes = {
         almaty: (
@@ -84,18 +76,35 @@ const Scene = ({ type }) => {
 };
 
 const ScenePlaceholder = ({ type, className = "", style = {}, image }) => {
-    const [failed, setFailed] = useState(false);
-    const src = photoUrl(type, image);
+    const [src, setSrc] = useState(image || cache[type] || null);
+
+    useEffect(() => {
+        if (image || cache[type] || !WIKI[type]) return;
+        let alive = true;
+        fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${WIKI[type]}`)
+            .then((r) => r.json())
+            .then((d) => {
+                const url = d.thumbnail?.source || d.originalimage?.source;
+                if (url) {
+                    cache[type] = url;
+                    if (alive) setSrc(url);
+                }
+            })
+            .catch(() => {});
+        return () => {
+            alive = false;
+        };
+    }, [type, image]);
 
     return (
         <div className={`relative overflow-hidden ${className}`} style={style}>
             <Scene type={type} />
-            {src && !failed && (
+            {src && (
                 <img
                     src={src}
                     alt=""
                     loading="lazy"
-                    onError={() => setFailed(true)}
+                    onError={() => setSrc(null)}
                     className="absolute inset-0 w-full h-full object-cover"
                 />
             )}

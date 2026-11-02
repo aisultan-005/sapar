@@ -5,21 +5,29 @@ import { TEAL, TEAL_DARK, GOLD, TERRA } from "../../constants/theme";
 import { itineraryApi } from "../../api/itinerary.api";
 import { useLang } from "../../i18n/LanguageContext";
 
-const TAGS = ["Природа", "История", "Культура", "Еда", "Горы", "Озёра"];
+// value уходит на backend (на русском), labelKey — ключ перевода для интерфейса
+const TAGS = [
+    { value: "Природа",  labelKey: "tagNature" },
+    { value: "История",  labelKey: "tagHistory" },
+    { value: "Культура", labelKey: "tagCulture" },
+    { value: "Еда",      labelKey: "tagFood" },
+    { value: "Горы",     labelKey: "tagMountains" },
+    { value: "Озёра",    labelKey: "tagLakes" },
+];
 const DURATIONS = [
-    { value: "1д",  label: "1 день" },
-    { value: "2д",  label: "2 дня" },
-    { value: "3д",  label: "3 дня" },
-    { value: "7д",  label: "Неделя" },
+    { value: "1д", days: 1, labelKey: "dur1" },
+    { value: "2д", days: 2, labelKey: "dur2" },
+    { value: "3д", days: 3, labelKey: "dur3" },
+    { value: "7д", days: 7, labelKey: "dur7" },
 ];
 const BUDGETS = [
-    { value: "low",    label: "До 20к ₸" },
-    { value: "medium", label: "20–50к ₸" },
-    { value: "high",   label: "От 50к ₸" },
+    { value: "low",    labelKey: "budgetLow" },
+    { value: "medium", labelKey: "budgetMid" },
+    { value: "high",   labelKey: "budgetHigh" },
 ];
 
 export default function AIRouteModal({ open, onClose, onResult }) {
-    const { t } = useLang();
+    const { t, lang } = useLang();
     const [selectedTags, setSelectedTags] = useState(["Природа"]);
     const [duration, setDuration] = useState("1д");
     const [budget, setBudget] = useState("medium");
@@ -30,7 +38,7 @@ export default function AIRouteModal({ open, onClose, onResult }) {
 
     const toggleTag = (tag) => {
         setSelectedTags((prev) =>
-            prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+            prev.includes(tag) ? prev.filter((x) => x !== tag) : [...prev, tag]
         );
     };
 
@@ -41,22 +49,26 @@ export default function AIRouteModal({ open, onClose, onResult }) {
             const res = await itineraryApi.generate({
                 tags: selectedTags,
                 duration,
+                days: DURATIONS.find((d) => d.value === duration)?.days ?? 1,
                 budget,
                 region: "Казахстан",
+                lang,
             });
             const data = res?.data;
             if (!data?.items?.length) {
-                throw new Error("Backend вернул пустой маршрут");
+                setError(t("aiErrEmpty"));
+                return;
             }
             onResult(data);
             onClose();
         } catch (e) {
+            const msg = e?.message || "";
             setError(
-                e.message?.includes("503")
-                    ? "Сервис AI временно недоступен"
-                    : e.message?.includes("Failed to fetch")
-                        ? "Не удалось связаться с сервером. Проверь интернет."
-                        : "Ошибка генерации. Попробуй ещё раз."
+                msg.includes("503")
+                    ? t("aiErrUnavailable")
+                    : msg.includes("Failed to fetch") || msg.includes("NetworkError")
+                        ? t("aiErrNetwork")
+                        : t("aiErrGeneric")
             );
         } finally {
             setLoading(false);
@@ -93,7 +105,7 @@ export default function AIRouteModal({ open, onClose, onResult }) {
                             width: 32, height: 32,
                             background: "rgba(255,255,255,0.2)",
                         }}
-                        aria-label="Закрыть"
+                        aria-label={t("close")}
                     >
                         <X size={18} color="#fff" />
                     </button>
@@ -109,10 +121,10 @@ export default function AIRouteModal({ open, onClose, onResult }) {
                                 className="text-xs tracking-wider uppercase font-medium"
                                 style={{ color: "#A5F3FC", letterSpacing: "0.15em" }}
                             >
-                                AI-планировщик
+                                {t("aiEyebrow")}
                             </p>
                             <h2 className="text-white text-lg font-bold font-display">
-                                Создать маршрут
+                                {t("aiModalTitle")}
                             </h2>
                         </div>
                     </div>
@@ -125,15 +137,16 @@ export default function AIRouteModal({ open, onClose, onResult }) {
                 >
                     {/* Tags */}
                     <p className="text-sm font-bold text-ink mb-2 font-display">
-                        Интересы
+                        {t("aiInterests")}
                     </p>
                     <div className="flex flex-wrap gap-2 mb-5">
-                        {TAGS.map((tag) => {
+                        {TAGS.map(({ value: tag, labelKey }) => {
                             const active = selectedTags.includes(tag);
                             return (
                                 <button
                                     key={tag}
                                     onClick={() => toggleTag(tag)}
+                                    aria-pressed={active}
                                     className="px-4 py-2 rounded-full text-xs font-semibold transition-all press-effect-soft"
                                     style={{
                                         background: active ? TEAL : "#F5F5F0",
@@ -142,7 +155,7 @@ export default function AIRouteModal({ open, onClose, onResult }) {
                                         boxShadow: active ? `0 4px 12px ${TEAL}45` : "none",
                                     }}
                                 >
-                                    {tag}
+                                    {t(labelKey)}
                                 </button>
                             );
                         })}
@@ -150,7 +163,7 @@ export default function AIRouteModal({ open, onClose, onResult }) {
 
                     {/* Duration */}
                     <p className="text-sm font-bold text-ink mb-2 font-display">
-                        Длительность
+                        {t("aiDuration")}
                     </p>
                     <div className="grid grid-cols-4 gap-2 mb-5">
                         {DURATIONS.map((d) => {
@@ -166,7 +179,7 @@ export default function AIRouteModal({ open, onClose, onResult }) {
                                         boxShadow: active ? `0 4px 12px ${TEAL}40` : "none",
                                     }}
                                 >
-                                    {d.label}
+                                    {t(d.labelKey)}
                                 </button>
                             );
                         })}
@@ -174,7 +187,7 @@ export default function AIRouteModal({ open, onClose, onResult }) {
 
                     {/* Budget */}
                     <p className="text-sm font-bold text-ink mb-2 font-display">
-                        Бюджет
+                        {t("aiBudget")}
                     </p>
                     <div className="grid grid-cols-3 gap-2 mb-2">
                         {BUDGETS.map((b) => {
@@ -190,7 +203,7 @@ export default function AIRouteModal({ open, onClose, onResult }) {
                                         boxShadow: active ? `0 4px 12px ${GOLD}50` : "none",
                                     }}
                                 >
-                                    {b.label}
+                                    {t(b.labelKey)}
                                 </button>
                             );
                         })}
@@ -228,12 +241,12 @@ export default function AIRouteModal({ open, onClose, onResult }) {
                         {loading ? (
                             <>
                                 <Loader2 size={18} className="animate-spin" />
-                                Генерирую маршрут...
+                                {t("aiGenerating")}
                             </>
                         ) : (
                             <>
                                 <Sparkles size={18} />
-                                Сгенерировать
+                                {t("aiGenerate")}
                             </>
                         )}
                     </button>
@@ -242,7 +255,7 @@ export default function AIRouteModal({ open, onClose, onResult }) {
                             className="text-center mt-2 text-xs"
                             style={{ color: "#9CA3AF" }}
                         >
-                            Первый запрос может занять до 30 секунд
+                            {t("aiSlowHint")}
                         </p>
                     )}
                 </div>

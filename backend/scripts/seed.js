@@ -111,13 +111,15 @@ async function main() {
     });
     console.log(`Создан пользователь: ${user.email} (пароль для локальной разработки: demo123)`);
 
-    const firstLoc = locations[0];
+    // locId — числовые id мест из каталога фронтенда (5 — Чарын, 6 — Кольсай)
+    const catalogIds = { 1: 5, 3: 6 };
     const itemsWithRef = demoItineraryItems.map((item, i) =>
-        i === 0 ? { ...item, locId: firstLoc._id } : item
+        catalogIds[i] ? { ...item, day: 1, locId: catalogIds[i] } : { ...item, day: 1 }
     );
 
     await Itinerary.create({
-        userId: user._id,
+        // в API владелец — Clerk userId (строка); для демо используем id локального пользователя
+        userId: String(user._id),
         title: "Тур выходного дня — Алматы",
         region: "Алматы",
         days: 1,

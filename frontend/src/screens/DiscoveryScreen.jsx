@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Search, X, Sparkles, ChevronRight, MapPin, Star } from "lucide-react";
 import OrnamentPattern from "../components/ui/OrnamentPattern";
 import ShanyrakIcon    from "../components/ui/ShanyrakIcon";
@@ -7,6 +7,8 @@ import { TEAL, TEAL_DARK, GOLD, TERRA } from "../constants/theme";
 import { allLocations, nearbyPlaces } from "../data/locations";
 import { filterDefs } from "../data/filters";
 import { useLang } from "../i18n/LanguageContext";
+import { useGeolocation } from "../hooks/useGeolocation";
+import { haversineKm, formatDistance, isValidCoords } from "../lib/geo";
 
 const DiscoveryScreen = ({
                              onLocationTap,
@@ -15,9 +17,28 @@ const DiscoveryScreen = ({
                              onSearchChange,
                              activeFilter,
                              onFilterChange,
+                             geoEnabled = false,
                          }) => {
     const [searchFocused, setSearchFocused] = useState(false);
     const { t } = useLang();
+    const userCoords = useGeolocation(geoEnabled);
+
+    // Если известна геопозиция — считаем реальные расстояния и сортируем по близости.
+    const fromYou = t("nearbyFromYou");
+    const nearbyWithDist = useMemo(() => {
+        if (!userCoords) return nearbyPlaces;
+        return nearbyPlaces
+            .map((p) =>
+                isValidCoords(p.coords)
+                    ? {
+                          ...p,
+                          distKm: haversineKm(userCoords, p.coords),
+                      }
+                    : p
+            )
+            .map((p) => (p.distKm != null ? { ...p, dist: `${formatDistance(p.distKm)} ${fromYou}` } : p))
+            .sort((a, b) => (a.distKm ?? Infinity) - (b.distKm ?? Infinity));
+    }, [userCoords, fromYou]);
 
     const filteredLocations = allLocations.filter((loc) => {
         const matchesSearch =
@@ -30,7 +51,7 @@ const DiscoveryScreen = ({
         return matchesSearch && matchesFilter;
     });
 
-    const filteredNearby = nearbyPlaces.filter((p) => {
+    const filteredNearby = nearbyWithDist.filter((p) => {
         const matchesSearch =
             !searchQuery ||
             p.name.toLowerCase().includes(searchQuery.toLowerCase());

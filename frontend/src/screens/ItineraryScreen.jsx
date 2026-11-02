@@ -1,44 +1,15 @@
-import { ChevronUp, ChevronDown, Map, Trash2, Wifi, WifiOff } from "lucide-react";
+import { ChevronUp, ChevronDown, Map, Trash2, Wifi, WifiOff, MapPinned, RotateCcw } from "lucide-react";
 import OrnamentPattern from "../components/ui/OrnamentPattern";
 import ShanyrakIcon    from "../components/ui/ShanyrakIcon";
-import { TEAL, TEAL_DARK, GOLD, WARM } from "../constants/theme";
+import { TEAL, TEAL_DARK, GOLD, WARM, TERRA } from "../constants/theme";
 import { useLang } from "../i18n/LanguageContext";
+import { computeSummary, countDays, groupByDay, itemDay } from "../lib/route";
 
 const iconMap = { food: "🍽️", nature: "🏔️", stay: "🏕️", added: "📍" };
 
-/** Парсит "2ч", "1.5ч", "30мин", "—" → число часов (float). */
-const parseDurationHours = (str) => {
-    if (!str || typeof str !== "string") return 0;
-    const s = str.toLowerCase().replace(/\s+/g, "");
-    if (s === "—" || s === "-") return 0;
-    const minMatch = s.match(/^(\d+(?:[.,]\d+)?)м(ин)?$/);
-    if (minMatch) return parseFloat(minMatch[1].replace(",", ".")) / 60;
-    const hMatch = s.match(/^(\d+(?:[.,]\d+)?)ч/);
-    if (hMatch) return parseFloat(hMatch[1].replace(",", "."));
-    return 0;
-};
-
-/** Считает сводку маршрута: расстояние, время, бюджет (эвристика по числу остановок). */
-const computeSummary = (items = []) => {
-    const stops = items.length;
-    if (stops === 0) return { distance: "—", time: "—", budget: "—" };
-
-    // Время = сумма длительностей пунктов
-    const hoursSum = items.reduce((sum, it) => sum + parseDurationHours(it.duration), 0);
-    const time = hoursSum > 0
-        ? `~${hoursSum % 1 === 0 ? hoursSum : hoursSum.toFixed(1)}ч`
-        : "—";
-
-    // Расстояние: грубая эвристика — между остановками ~40 км в среднем
-    const distanceKm = Math.max(0, (stops - 1) * 40);
-    const distance = stops === 1 ? "—" : `${distanceKm} км`;
-
-    // Бюджет: ~5000 ₸ на остановку + еда/проживание
-    const budgetK = Math.round(stops * 5);
-    const budget = `~${budgetK}к ₸`;
-
-    return { distance, time, budget };
-};
+const formatHours = (h) => (h % 1 === 0 ? String(h) : h.toFixed(1));
+const formatBudget = (tenge) =>
+    tenge >= 1000 ? `~${Math.round(tenge / 1000)}к ₸` : `~${tenge} ₸`;
 
 const ItineraryScreen = ({
                              items,
@@ -47,18 +18,44 @@ const ItineraryScreen = ({
                              offlineMode,
                              onOfflineModeChange,
                              onRemoveItem,
+                             onShowOnMap,
+                             onReset,
+                             onClear,
                          }) => {
-    const { t } = useLang();
+    const { t, tn } = useLang();
     const summary = computeSummary(items);
-    const daysCount = Math.max(1, Math.ceil(items.length / 5));
+    const daysCount = countDays(items);
+    const groups = groupByDay(items);
+    const multiDay = groups.length > 1;
+    const hasCoords = items.some((it) => Array.isArray(it.coords));
 
+    /**
+     * Перемещение пункта. Внутри дня — меняем местами, но время остаётся на своих
+     * позициях (таймлайн не ломается). На границе дня — пункт переходит в соседний день.
+     */
     const moveItem = (index, dir) => {
-        const newItems = [...items];
         const target = index + dir;
-        if (target < 0 || target >= newItems.length) return;
-        [newItems[index], newItems[target]] = [newItems[target], newItems[index]];
-        onItemsChange(newItems);
+        if (target < 0 || target >= items.length) return;
+        const next = [...items];
+        const a = next[index];
+        const b = next[target];
+        if (itemDay(a) !== itemDay(b)) {
+            next[index] = { ...a, day: itemDay(b) };
+        } else {
+            next[index] = { ...b, time: a.time };
+            next[target] = { ...a, time: b.time };
+        }
+        onItemsChange(next);
     };
+
+    const summaryCells = [
+        {
+            label: t("sumDistance"),
+            value: summary.distanceKm > 0 ? `${summary.measured ? "" : "~"}${summary.distanceKm} км` : "—",
+        },
+        { label: t("sumTime"),   value: summary.hours > 0 ? `~${formatHours(summary.hours)}ч` : "—" },
+        { label: t("sumBudget"), value: summary.budget > 0 ? formatBudget(summary.budget) : "—" },
+    ];
 
     return (
         <div className="flex flex-col h-full" style={{ background: "#FAFAF7" }}>
@@ -87,7 +84,7 @@ const ItineraryScreen = ({
                             className="px-3 py-1.5 text-xs font-semibold rounded-full"
                             style={{ background: "rgba(255,255,255,0.22)", color: "#fff" }}
                         >
-                            {daysCount === 1 ? t("routeDays") : `${daysCount} д`}
+                            {tn("days", daysCount)}
                         </div>
                     </div>
 
@@ -120,7 +117,7 @@ const ItineraryScreen = ({
                             }}
                             role="switch"
                             aria-checked={offlineMode}
-                            aria-label="Офлайн режим"
+                            aria-label={t("offlineAvailable")}
                         >
                             <div
                                 className="bg-white shadow-md rounded-full transition-transform duration-300"
@@ -132,6 +129,11 @@ const ItineraryScreen = ({
                             />
                         </button>
                     </div>
+                    {offlineMode && (
+                        <p className="mt-2 px-1 text-[11px]" style={{ color: "rgba(255,255,255,0.8)" }}>
+                            {t("offlineSavedHint")}
+                        </p>
+                    )}
                 </div>
             </div>
 
@@ -154,112 +156,34 @@ const ItineraryScreen = ({
                     </div>
                 ) : (
                     <div className="relative">
-                        {items.map((item, i) => (
-                            <div
-                                key={item.id}
-                                className="flex gap-3 mb-1"
-                                style={{
-                                    animation: `fadeSlideIn 0.3s ease ${i * 0.06}s both`,
-                                }}
-                            >
-                                {/* Time + dot */}
-                                <div
-                                    className="flex flex-col items-center"
-                                    style={{ width: 44 }}
-                                >
-                                    <span
-                                        className="font-bold"
-                                        style={{ fontSize: 11, color: TEAL_DARK }}
-                                    >
-                                        {item.time}
-                                    </span>
-                                    <div
-                                        className="mt-2 rounded-full"
-                                        style={{
-                                            width: 12,
-                                            height: 12,
-                                            border: `2px solid ${TEAL}`,
-                                            background: i === 0 ? TEAL : "#fff",
-                                            boxShadow: i === 0 ? `0 0 0 4px ${TEAL}25` : "none",
-                                        }}
+                        {groups.map((group) => (
+                            <div key={group.day}>
+                                {multiDay && (
+                                    <div className="flex items-center gap-2 mb-2 mt-1">
+                                        <span
+                                            className="px-2.5 py-1 rounded-full text-[11px] font-bold"
+                                            style={{ background: `${GOLD}22`, color: "#92400e" }}
+                                        >
+                                            {t("dayN").replace("{n}", group.day)}
+                                        </span>
+                                        <div className="flex-1 h-px" style={{ background: "#F1F0EC" }} />
+                                    </div>
+                                )}
+                                {group.items.map(({ item, index: i }, gi) => (
+                                    <TimelineItem
+                                        key={item.id}
+                                        item={item}
+                                        isFirst={gi === 0}
+                                        isLastInGroup={gi === group.items.length - 1}
+                                        canUp={i > 0}
+                                        canDown={i < items.length - 1}
+                                        onUp={() => moveItem(i, -1)}
+                                        onDown={() => moveItem(i, 1)}
+                                        onRemove={() => onRemoveItem(item.id)}
+                                        t={t}
+                                        delay={i * 0.06}
                                     />
-                                    {i < items.length - 1 && (
-                                        <div
-                                            className="flex-1 mt-1"
-                                            style={{ width: 2, background: `${TEAL}25`, borderRadius: 2 }}
-                                        />
-                                    )}
-                                </div>
-
-                                {/* Card */}
-                                <div
-                                    className="flex-1 p-3 mb-2.5 flex items-center gap-3 rounded-2xl bg-white"
-                                    style={{
-                                        boxShadow: "0 2px 12px rgba(31,41,55,0.05)",
-                                        border: "1px solid #F1F0EC",
-                                    }}
-                                >
-                                    <div
-                                        className="flex items-center justify-center rounded-xl text-2xl"
-                                        style={{ width: 44, height: 44, background: "#FAF3E3" }}
-                                    >
-                                        {iconMap[item.icon] || "📍"}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-semibold text-sm text-ink truncate">
-                                            {item.title}
-                                        </p>
-                                        <p
-                                            className="mt-0.5"
-                                            style={{ fontSize: 11, color: "#9CA3AF" }}
-                                        >
-                                            {item.subtitle} · {item.duration}
-                                        </p>
-                                    </div>
-
-                                    {/* Controls */}
-                                    <div className="flex flex-col gap-1">
-                                        <button
-                                            onClick={() => moveItem(i, -1)}
-                                            className="flex items-center justify-center rounded-lg"
-                                            style={{
-                                                width: 26, height: 26,
-                                                background: i > 0 ? `${TEAL}12` : "transparent",
-                                            }}
-                                            aria-label="Переместить вверх"
-                                            disabled={i === 0}
-                                        >
-                                            <ChevronUp
-                                                size={14}
-                                                color={i > 0 ? TEAL_DARK : "#e5e7eb"}
-                                            />
-                                        </button>
-                                        <button
-                                            onClick={() => onRemoveItem(item.id)}
-                                            className="flex items-center justify-center rounded-lg"
-                                            style={{ width: 26, height: 26, background: "#FCEFE8" }}
-                                            aria-label={`Удалить ${item.title}`}
-                                        >
-                                            <Trash2 size={13} color="#C97B5A" />
-                                        </button>
-                                        <button
-                                            onClick={() => moveItem(i, 1)}
-                                            className="flex items-center justify-center rounded-lg"
-                                            style={{
-                                                width: 26, height: 26,
-                                                background:
-                                                    i < items.length - 1 ? `${TEAL}12` : "transparent",
-                                            }}
-                                            aria-label="Переместить вниз"
-                                            disabled={i === items.length - 1}
-                                        >
-                                            <ChevronDown
-                                                size={14}
-                                                color={i < items.length - 1 ? TEAL_DARK : "#e5e7eb"}
-                                            />
-                                        </button>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         ))}
                     </div>
@@ -278,11 +202,7 @@ const ItineraryScreen = ({
                             </span>
                         </div>
                         <div className="grid grid-cols-3 gap-3">
-                            {[
-                                { label: t("sumDistance"), value: summary.distance },
-                                { label: t("sumTime"),     value: summary.time     },
-                                { label: t("sumBudget"),   value: summary.budget   },
-                            ].map((s, i) => (
+                            {summaryCells.map((s, i) => (
                                 <div
                                     key={i}
                                     className="text-center p-2.5 rounded-xl bg-white/60"
@@ -294,12 +214,138 @@ const ItineraryScreen = ({
                                 </div>
                             ))}
                         </div>
+                        <p className="mt-2.5 text-center" style={{ fontSize: 10, color: "#9CA3AF" }}>
+                            {summary.measured ? t("sumMeasuredHint") : t("sumEstimatedHint")}
+                        </p>
                     </div>
                 )}
+
+                {/* ── Actions ── */}
+                <div className="mt-4 flex flex-col gap-2">
+                    {items.length > 0 && hasCoords && onShowOnMap && (
+                        <button
+                            onClick={onShowOnMap}
+                            className="press-effect w-full py-3 text-white font-bold text-sm flex items-center justify-center gap-2 rounded-2xl"
+                            style={{
+                                background: `linear-gradient(135deg, ${TEAL} 0%, ${TEAL_DARK} 100%)`,
+                                boxShadow: `0 6px 18px ${TEAL}40`,
+                            }}
+                        >
+                            <MapPinned size={16} />
+                            {t("showOnMap")}
+                        </button>
+                    )}
+                    <div className="grid grid-cols-2 gap-2">
+                        {onReset && (
+                            <button
+                                onClick={onReset}
+                                className="press-effect-soft py-2.5 text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl"
+                                style={{ background: `${TEAL}12`, color: TEAL_DARK }}
+                            >
+                                <RotateCcw size={13} />
+                                {t("routeReset")}
+                            </button>
+                        )}
+                        {onClear && items.length > 0 && (
+                            <button
+                                onClick={() => {
+                                    if (window.confirm(t("routeClearConfirm"))) onClear();
+                                }}
+                                className="press-effect-soft py-2.5 text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl"
+                                style={{ background: "#FCEFE8", color: TERRA }}
+                            >
+                                <Trash2 size={13} />
+                                {t("routeClear")}
+                            </button>
+                        )}
+                    </div>
+                </div>
                 <div style={{ height: 16 }} />
             </div>
         </div>
     );
 };
+
+const TimelineItem = ({ item, isFirst, isLastInGroup, canUp, canDown, onUp, onDown, onRemove, t, delay }) => (
+    <div
+        className="flex gap-3 mb-1"
+        style={{ animation: `fadeSlideIn 0.3s ease ${delay}s both` }}
+    >
+        {/* Time + dot */}
+        <div className="flex flex-col items-center" style={{ width: 44 }}>
+            <span className="font-bold" style={{ fontSize: 11, color: TEAL_DARK }}>
+                {item.time}
+            </span>
+            <div
+                className="mt-2 rounded-full"
+                style={{
+                    width: 12,
+                    height: 12,
+                    border: `2px solid ${TEAL}`,
+                    background: isFirst ? TEAL : "#fff",
+                    boxShadow: isFirst ? `0 0 0 4px ${TEAL}25` : "none",
+                }}
+            />
+            {!isLastInGroup && (
+                <div
+                    className="flex-1 mt-1"
+                    style={{ width: 2, background: `${TEAL}25`, borderRadius: 2 }}
+                />
+            )}
+        </div>
+
+        {/* Card */}
+        <div
+            className="flex-1 p-3 mb-2.5 flex items-center gap-3 rounded-2xl bg-white min-w-0"
+            style={{
+                boxShadow: "0 2px 12px rgba(31,41,55,0.05)",
+                border: "1px solid #F1F0EC",
+            }}
+        >
+            <div
+                className="flex items-center justify-center rounded-xl text-2xl shrink-0"
+                style={{ width: 44, height: 44, background: "#FAF3E3" }}
+            >
+                {iconMap[item.icon] || "📍"}
+            </div>
+            <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm text-ink truncate">{item.title}</p>
+                <p className="mt-0.5" style={{ fontSize: 11, color: "#9CA3AF" }}>
+                    {[item.subtitle, item.duration].filter(Boolean).join(" · ")}
+                </p>
+            </div>
+
+            {/* Controls */}
+            <div className="flex flex-col gap-1">
+                <button
+                    onClick={onUp}
+                    className="flex items-center justify-center rounded-lg"
+                    style={{ width: 26, height: 26, background: canUp ? `${TEAL}12` : "transparent" }}
+                    aria-label={t("moveUp")}
+                    disabled={!canUp}
+                >
+                    <ChevronUp size={14} color={canUp ? TEAL_DARK : "#e5e7eb"} />
+                </button>
+                <button
+                    onClick={onRemove}
+                    className="flex items-center justify-center rounded-lg"
+                    style={{ width: 26, height: 26, background: "#FCEFE8" }}
+                    aria-label={`${t("remove")}: ${item.title}`}
+                >
+                    <Trash2 size={13} color="#C97B5A" />
+                </button>
+                <button
+                    onClick={onDown}
+                    className="flex items-center justify-center rounded-lg"
+                    style={{ width: 26, height: 26, background: canDown ? `${TEAL}12` : "transparent" }}
+                    aria-label={t("moveDown")}
+                    disabled={!canDown}
+                >
+                    <ChevronDown size={14} color={canDown ? TEAL_DARK : "#e5e7eb"} />
+                </button>
+            </div>
+        </div>
+    </div>
+);
 
 export default ItineraryScreen;

@@ -28,7 +28,7 @@ app.use(
     })
 );
 
-app.use(express.json());
+app.use(express.json({ limit: "200kb" }));
 
 // Clerk подключаем только если ключ задан (иначе он падает при старте).
 if (process.env.CLERK_SECRET_KEY) {

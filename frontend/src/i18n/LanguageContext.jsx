@@ -94,6 +94,58 @@ const dict = {
         filterFood: "Еда",
         filterAdventure: "Приключения",
         filterFamily: "Семья",
+
+        // ── Маршрут: дни, действия, подсказки
+        days_one: "{n} день",
+        days_few: "{n} дня",
+        days_many: "{n} дней",
+        dayN: "День {n}",
+        offlineSavedHint: "Маршрут сохранён на устройстве и откроется без интернета",
+        sumMeasuredHint: "Расстояние по координатам мест (с поправкой на дороги)",
+        sumEstimatedHint: "Оценка: для части мест нет координат",
+        showOnMap: "Показать на карте",
+        routeReset: "Демо-маршрут",
+        routeClear: "Очистить",
+        routeClearConfirm: "Удалить все пункты маршрута?",
+        moveUp: "Переместить вверх",
+        moveDown: "Переместить вниз",
+        remove: "Удалить",
+
+        // ── Карта: маршрут
+        mapRoute: "Маршрут",
+        mapAllPlaces: "Все места",
+        mapStop: "Остановка",
+
+        // ── Рядом с вами
+        nearbyFromYou: "от вас",
+
+        // ── AI-планировщик
+        aiEyebrow: "AI-планировщик",
+        aiModalTitle: "Создать маршрут",
+        aiInterests: "Интересы",
+        aiDuration: "Длительность",
+        aiBudget: "Бюджет",
+        aiGenerate: "Сгенерировать",
+        aiGenerating: "Генерирую маршрут...",
+        aiSlowHint: "Первый запрос может занять до 30 секунд",
+        aiErrEmpty: "Сервер вернул пустой маршрут",
+        aiErrUnavailable: "Сервис AI временно недоступен",
+        aiErrNetwork: "Не удалось связаться с сервером. Проверь интернет.",
+        aiErrGeneric: "Ошибка генерации. Попробуй ещё раз.",
+        close: "Закрыть",
+        tagNature: "Природа",
+        tagHistory: "История",
+        tagCulture: "Культура",
+        tagFood: "Еда",
+        tagMountains: "Горы",
+        tagLakes: "Озёра",
+        dur1: "1 день",
+        dur2: "2 дня",
+        dur3: "3 дня",
+        dur7: "Неделя",
+        budgetLow: "До 20к ₸",
+        budgetMid: "20–50к ₸",
+        budgetHigh: "От 50к ₸",
     },
 
     ҚАЗ: {
@@ -179,6 +231,54 @@ const dict = {
         filterFood: "Тағам",
         filterAdventure: "Шытырман",
         filterFamily: "Отбасы",
+
+        days_one: "{n} күн",
+        days_few: "{n} күн",
+        days_many: "{n} күн",
+        dayN: "{n}-күн",
+        offlineSavedHint: "Бағыт құрылғыда сақталды, интернетсіз ашылады",
+        sumMeasuredHint: "Қашықтық орындардың координаттары бойынша (жолға түзетумен)",
+        sumEstimatedHint: "Шамамен: кейбір орындардың координаттары жоқ",
+        showOnMap: "Картада көрсету",
+        routeReset: "Демо-бағыт",
+        routeClear: "Тазалау",
+        routeClearConfirm: "Бағыттың барлық нүктелерін өшіру керек пе?",
+        moveUp: "Жоғары жылжыту",
+        moveDown: "Төмен жылжыту",
+        remove: "Өшіру",
+
+        mapRoute: "Бағыт",
+        mapAllPlaces: "Барлық орындар",
+        mapStop: "Аялдама",
+
+        nearbyFromYou: "сізден",
+
+        aiEyebrow: "AI-жоспарлаушы",
+        aiModalTitle: "Бағыт құру",
+        aiInterests: "Қызығушылықтар",
+        aiDuration: "Ұзақтығы",
+        aiBudget: "Бюджет",
+        aiGenerate: "Жасау",
+        aiGenerating: "Бағыт жасалуда...",
+        aiSlowHint: "Алғашқы сұраныс 30 секундқа дейін созылуы мүмкін",
+        aiErrEmpty: "Сервер бос бағыт қайтарды",
+        aiErrUnavailable: "AI қызметі уақытша қолжетімсіз",
+        aiErrNetwork: "Сервермен байланыс жоқ. Интернетті тексеріңіз.",
+        aiErrGeneric: "Қате шықты. Қайталап көріңіз.",
+        close: "Жабу",
+        tagNature: "Табиғат",
+        tagHistory: "Тарих",
+        tagCulture: "Мәдениет",
+        tagFood: "Тағам",
+        tagMountains: "Таулар",
+        tagLakes: "Көлдер",
+        dur1: "1 күн",
+        dur2: "2 күн",
+        dur3: "3 күн",
+        dur7: "Апта",
+        budgetLow: "20 мың ₸ дейін",
+        budgetMid: "20–50 мың ₸",
+        budgetHigh: "50 мың ₸ бастап",
     },
 
     ENG: {
@@ -264,10 +364,69 @@ const dict = {
         filterFood: "Food",
         filterAdventure: "Adventure",
         filterFamily: "Family",
+
+        days_one: "{n} day",
+        days_few: "{n} days",
+        days_many: "{n} days",
+        dayN: "Day {n}",
+        offlineSavedHint: "The route is saved on this device and opens without internet",
+        sumMeasuredHint: "Distance from place coordinates (adjusted for roads)",
+        sumEstimatedHint: "Estimate: some places have no coordinates",
+        showOnMap: "Show on map",
+        routeReset: "Demo route",
+        routeClear: "Clear",
+        routeClearConfirm: "Remove all stops from the route?",
+        moveUp: "Move up",
+        moveDown: "Move down",
+        remove: "Remove",
+
+        mapRoute: "Route",
+        mapAllPlaces: "All places",
+        mapStop: "Stop",
+
+        nearbyFromYou: "away",
+
+        aiEyebrow: "AI planner",
+        aiModalTitle: "Create a route",
+        aiInterests: "Interests",
+        aiDuration: "Duration",
+        aiBudget: "Budget",
+        aiGenerate: "Generate",
+        aiGenerating: "Generating route...",
+        aiSlowHint: "The first request may take up to 30 seconds",
+        aiErrEmpty: "The server returned an empty route",
+        aiErrUnavailable: "AI service is temporarily unavailable",
+        aiErrNetwork: "Can't reach the server. Check your connection.",
+        aiErrGeneric: "Generation failed. Please try again.",
+        close: "Close",
+        tagNature: "Nature",
+        tagHistory: "History",
+        tagCulture: "Culture",
+        tagFood: "Food",
+        tagMountains: "Mountains",
+        tagLakes: "Lakes",
+        dur1: "1 day",
+        dur2: "2 days",
+        dur3: "3 days",
+        dur7: "Week",
+        budgetLow: "Under 20k ₸",
+        budgetMid: "20–50k ₸",
+        budgetHigh: "Over 50k ₸",
     },
 };
 
 export const LANGS = ["РУС", "ҚАЗ", "ENG"];
+
+/** Форма множественного числа: one / few / many (правила для русского; для ENG/ҚАЗ — one/many). */
+function pluralForm(lang, n) {
+    const abs = Math.abs(n);
+    if (lang !== "РУС") return abs === 1 ? "one" : "many";
+    const mod10 = abs % 10;
+    const mod100 = abs % 100;
+    if (mod10 === 1 && mod100 !== 11) return "one";
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "few";
+    return "many";
+}
 
 const LanguageContext = createContext(null);
 
@@ -293,8 +452,11 @@ export function LanguageProvider({ children }) {
 
     const t = (key) => dict[lang]?.[key] ?? dict.РУС[key] ?? key;
 
+    /** Перевод с числом и правильной формой множественного числа: tn("days", 3) → "3 дня". */
+    const tn = (key, n) => t(`${key}_${pluralForm(lang, n)}`).replace("{n}", n);
+
     return (
-        <LanguageContext.Provider value={{ lang, setLang, t }}>
+        <LanguageContext.Provider value={{ lang, setLang, t, tn }}>
             {children}
         </LanguageContext.Provider>
     );
@@ -302,6 +464,6 @@ export function LanguageProvider({ children }) {
 
 export function useLang() {
     const ctx = useContext(LanguageContext);
-    if (!ctx) return { lang: "РУС", setLang: () => {}, t: (k) => k };
+    if (!ctx) return { lang: "РУС", setLang: () => {}, t: (k) => k, tn: (k, n) => `${n}` };
     return ctx;
 }

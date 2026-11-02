@@ -23,9 +23,13 @@ export default function SaparMainShell() {
     const [activeFilter, setActiveFilter] = useState(null);
     const [offlineMode, setOfflineMode]   = useState(false);
     const [aiModalOpen, setAiModalOpen]   = useState(false);
+    const [mapMode, setMapMode]           = useState("all"); // "all" | "route"
 
     const { likedIds, toggleLike }             = useLikes();
-    const { items, title, routeLocationIds, addToRoute, removeFromRoute, reorderItems, replaceItems } = useItinerary();
+    const {
+        items, title, routeLocationIds,
+        addToRoute, removeFromRoute, reorderItems, replaceItems, resetRoute, clearRoute,
+    } = useItinerary();
     const { settings, setSettings }            = useSettings();
 
     const handleLocationTap = (loc) => {
@@ -41,6 +45,11 @@ export default function SaparMainShell() {
         // data = { id, title, items: [...], isAI } — передаём целиком, чтобы обновился и title
         replaceItems(data);
         setActiveTab(2); // переключаемся на вкладку Маршрут
+    };
+
+    const handleShowRouteOnMap = () => {
+        setMapMode("route");
+        setActiveTab(1);
     };
 
     const renderScreen = () => {
@@ -67,10 +76,16 @@ export default function SaparMainShell() {
                     onSearchChange={setSearchQuery}
                     activeFilter={activeFilter}
                     onFilterChange={setActiveFilter}
+                    geoEnabled={settings.geoEnabled}
                 />
             );
             case 1: return (
-                <MapScreen onLocationTap={handleLocationTap} />
+                <MapScreen
+                    onLocationTap={handleLocationTap}
+                    routeItems={items}
+                    mode={mapMode}
+                    onModeChange={setMapMode}
+                />
             );
             case 2: return (
                 <ItineraryScreen
@@ -80,6 +95,9 @@ export default function SaparMainShell() {
                     offlineMode={offlineMode}
                     onOfflineModeChange={setOfflineMode}
                     onRemoveItem={removeFromRoute}
+                    onShowOnMap={handleShowRouteOnMap}
+                    onReset={resetRoute}
+                    onClear={clearRoute}
                 />
             );
             case 3: return (

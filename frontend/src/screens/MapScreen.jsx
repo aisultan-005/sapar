@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from "react-leaflet";
+import { useEffect, useMemo } from "react";
+import { MapContainer, TileLayer, Marker, Popup, ZoomControl, Polyline, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapPin, Star, Navigation } from "lucide-react";
@@ -7,6 +7,8 @@ import OrnamentPattern from "../components/ui/OrnamentPattern";
 import { TEAL, TEAL_DARK, GOLD } from "../constants/theme";
 import { allLocations, nearbyPlaces } from "../data/locations";
 import { useLang } from "../i18n/LanguageContext";
+import { findLocation, isValidCoords } from "../lib/geo";
+import { computeSummary, countDays, itemDay } from "../lib/route";
 
 // Центр карты — географический центр Казахстана
 const KZ_CENTER = [48.0196, 66.9237];
@@ -39,14 +41,61 @@ const createMarkerIcon = (color = TEAL) =>
         popupAnchor: [0, -38],
     });
 
-const MapScreen = ({ onLocationTap }) => {
-    const { t } = useLang();
+/** Нумерованный маркер остановки маршрута. */
+const createStopIcon = (n) =>
+    L.divIcon({
+        className: "sapar-marker",
+        html: `
+            <div style="
+                width: 30px; height: 30px; border-radius: 50%;
+                background: ${TEAL_DARK}; color: #fff;
+                border: 3px solid ${GOLD};
+                display: flex; align-items: center; justify-content: center;
+                font: 700 13px/1 system-ui, sans-serif;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            ">${n}</div>
+        `,
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+        popupAnchor: [0, -16],
+    });
+
+/** Подгоняет масштаб карты под переданные точки. */
+const FitBounds = ({ points }) => {
+    const map = useMap();
+    const key = points.map((p) => p.join(",")).join("|");
+    useEffect(() => {
+        if (points.length === 0) return;
+        if (points.length === 1) {
+            map.setView(points[0], 10);
+        } else {
+            map.fitBounds(points, { padding: [40, 40], maxZoom: 12 });
+        }
+    }, [map, key]);
+    return null;
+};
+
+const MapScreen = ({ onLocationTap, routeItems = [], mode = "all", onModeChange }) => {
+    const { t, tn } = useLang();
 
     // Все места с координатами
     const allMarkers = useMemo(() => {
         const all = [...allLocations, ...nearbyPlaces];
-        return all.filter((p) => Array.isArray(p.coords) && p.coords.length === 2);
+        return all.filter((p) => isValidCoords(p.coords));
     }, []);
+
+    // Остановки маршрута с координатами (нумерация — по порядку в маршруте)
+    const routeStops = useMemo(
+        () =>
+            routeItems
+                .map((item, i) => ({ item, n: i + 1 }))
+                .filter(({ item }) => isValidCoords(item.coords)),
+        [routeItems]
+    );
+    const routePoints = routeStops.map(({ item }) => item.coords);
+    const hasRoute = routePoints.length > 0;
+    const showRoute = mode === "route" && hasRoute;
+    const summary = useMemo(() => computeSummary(routeItems), [routeItems]);
 
     return (
         <div className="flex flex-col h-full" style={{ background: "#FAFAF7" }}>
@@ -77,10 +126,41 @@ const MapScreen = ({ onLocationTap }) => {
                     >
                         <Navigation size={13} color="#fff" />
                         <span className="text-xs font-semibold text-white">
-                            {allMarkers.length}
+                            {showRoute ? routeStops.length : allMarkers.length}
                         </span>
                     </div>
                 </div>
+
+                {/* Переключатель: все места / маршрут */}
+                {hasRoute && onModeChange && (
+                    <div
+                        className="relative z-10 mt-4 grid grid-cols-2 gap-1 p-1 rounded-2xl"
+                        style={{ background: "rgba(255,255,255,0.15)" }}
+                        role="tablist"
+                    >
+                        {[
+                            { value: "all",   label: t("mapAllPlaces") },
+                            { value: "route", label: t("mapRoute") },
+                        ].map((opt) => {
+                            const active = (showRoute ? "route" : "all") === opt.value;
+                            return (
+                                <button
+                                    key={opt.value}
+                                    role="tab"
+                                    aria-selected={active}
+                                    onClick={() => onModeChange(opt.value)}
+                                    className="py-1.5 rounded-xl text-xs font-semibold transition-all"
+                                    style={{
+                                        background: active ? "#fff" : "transparent",
+                                        color: active ? TEAL_DARK : "rgba(255,255,255,0.9)",
+                                    }}
+                                >
+                                    {opt.label}
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
 
             {/* ── Map ── */}
@@ -107,7 +187,52 @@ const MapScreen = ({ onLocationTap }) => {
                     />
                     <ZoomControl position="bottomright" />
 
-                    {allMarkers.map((place) => (
+                    {showRoute && <FitBounds points={routePoints} />}
+
+                    {showRoute && (
+                        <Polyline
+                            positions={routePoints}
+                            pathOptions={{ color: TEAL_DARK, weight: 4, opacity: 0.85, dashArray: "8 8" }}
+                        />
+                    )}
+
+                    {showRoute && routeStops.map(({ item, n }) => {
+                        const loc = findLocation(item);
+                        return (
+                            <Marker key={item.id} position={item.coords} icon={createStopIcon(n)}>
+                                <Popup closeButton={false} className="sapar-popup">
+                                    <div style={{ minWidth: 180, padding: 4 }}>
+                                        <p style={{ fontSize: 10, color: TEAL_DARK, margin: 0, fontWeight: 700 }}>
+                                            {t("mapStop")} {n} · {t("dayN").replace("{n}", itemDay(item))} · {item.time}
+                                        </p>
+                                        <p className="font-bold text-sm" style={{ color: "#1F2937", margin: "4px 0" }}>
+                                            {item.title}
+                                        </p>
+                                        {item.subtitle && (
+                                            <p style={{ fontSize: 11, color: "#9CA3AF", margin: 0 }}>
+                                                {item.subtitle}
+                                            </p>
+                                        )}
+                                        {loc && onLocationTap && (
+                                            <button
+                                                onClick={() => onLocationTap(loc)}
+                                                style={{
+                                                    marginTop: 8, width: "100%", padding: "6px 10px",
+                                                    background: `linear-gradient(135deg, ${TEAL}, ${TEAL_DARK})`,
+                                                    color: "#fff", fontSize: 12, fontWeight: 700,
+                                                    borderRadius: 10, border: "none", cursor: "pointer",
+                                                }}
+                                            >
+                                                {t("mapOpen")}
+                                            </button>
+                                        )}
+                                    </div>
+                                </Popup>
+                            </Marker>
+                        );
+                    })}
+
+                    {!showRoute && allMarkers.map((place) => (
                         <Marker
                             key={place.id}
                             position={place.coords}
@@ -194,7 +319,9 @@ const MapScreen = ({ onLocationTap }) => {
                         style={{ width: 8, height: 8, background: TEAL }}
                     />
                     <span className="text-xs font-semibold text-ink">
-                        {t("mapHint")}
+                        {showRoute
+                            ? `${tn("days", countDays(routeItems))} · ${summary.distanceKm} км`
+                            : t("mapHint")}
                     </span>
                 </div>
             </div>

@@ -253,10 +253,11 @@ export const nearbyPlaces = [
     },
 ];
 
+// Координаты пунктов приблизительные — нужны для расчёта расстояния и линии на карте.
 export const defaultItinerary = [
-    { id: 1, time: "08:00", title: "Завтрак в Kaganat", subtitle: "Национальная кухня", duration: "1ч", icon: "food" },
-    { id: 2, time: "10:00", title: "Чарынский каньон", subtitle: "Гранд-Каньон Казахстана", duration: "3ч", icon: "nature" },
-    { id: 3, time: "13:00", title: "Обед у реки Чарын", subtitle: "Пикник с видом", duration: "1ч", icon: "food" },
-    { id: 4, time: "15:00", title: "Кольсайские озёра", subtitle: "Жемчужины Тянь-Шаня", duration: "3ч", icon: "nature" },
-    { id: 5, time: "19:00", title: "Юрточный лагерь", subtitle: "Ночёвка под звёздами", duration: "—", icon: "stay" },
+    { id: 1, day: 1, time: "08:00", title: "Завтрак в Kaganat", subtitle: "Национальная кухня", duration: "1ч", icon: "food", coords: [43.2389, 76.8897] },
+    { id: 2, day: 1, time: "10:00", title: "Чарынский каньон", subtitle: "Гранд-Каньон Казахстана", duration: "3ч", icon: "nature", locId: 5, coords: [43.3550, 79.0750] },
+    { id: 3, day: 1, time: "13:00", title: "Обед у реки Чарын", subtitle: "Пикник с видом", duration: "1ч", icon: "food", coords: [43.3420, 79.0850] },
+    { id: 4, day: 1, time: "15:00", title: "Кольсайские озёра", subtitle: "Жемчужины Тянь-Шаня", duration: "3ч", icon: "nature", locId: 6, coords: [42.7333, 78.3333] },
+    { id: 5, day: 1, time: "19:00", title: "Юрточный лагерь", subtitle: "Ночёвка под звёздами", duration: "—", icon: "stay", coords: [42.9500, 78.3500] },
 ];
